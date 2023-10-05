@@ -1,9 +1,6 @@
-using Common.Logging;
 using Common.POCOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace Server.Controllers;
 [ApiController]
@@ -12,12 +9,8 @@ public class WeatherForecastController : ControllerBase
 {
     [Authorize(Roles = "admin")]
     [HttpGet("GetWeatherForecast", Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get() 
-    {
-        return Enumerable.Range(1, 5).Select(GetRandomForecast).ToArray(); 
-    }
+    public IEnumerable<WeatherForecast> Get() => Enumerable.Range(1, 5).Select(GetRandomForecast).ToArray();
 
-    
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"

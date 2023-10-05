@@ -1,9 +1,6 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Server;
-using Server.Middleware;
 using Server.Security;
 
 internal class Program
@@ -11,8 +8,6 @@ internal class Program
     private static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        _ = builder.Services.AddScoped<VerifyJWTBlacklistMiddleware>();
 
         _ = builder.Logging.ClearProviders();
         _ = builder.Logging.AddConsole();
@@ -35,7 +30,7 @@ internal class Program
                 ValidIssuer = Config.AuthIssuer,
                 ValidAudience = Config.AuthAudience,
                 IssuerSigningKey = SecurityHandler.AuthorizationSigningTokenKey,
-                ClockSkew = TimeSpan.FromMinutes(5)
+                ClockSkew = new TimeSpan(0)
             };
         });
 
@@ -49,9 +44,6 @@ internal class Program
         }
 
         //app.UseHttpsRedirection();
-        
-        // Verify token not blacklisted
-        _ = app.UseMiddleware<VerifyJWTBlacklistMiddleware>();
 
         _ = app.UseAuthorization();
 

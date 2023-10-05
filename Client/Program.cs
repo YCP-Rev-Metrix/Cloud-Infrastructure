@@ -5,34 +5,28 @@ using System.Net;
 
 internal class Program
 {
-    private static readonly FeaturedAPI Connection = new("https://localhost:7238/api/");
+    private static readonly APIConnection Connection = new("https://localhost:7238/api/");
 
-    private static readonly APIRequestErrorHandler LoginOn401 = new APIRequestErrorHandler().AddCondition(HttpStatusCode.Unauthorized, async () => await Connection.Login("admin", "root"));
-    
     private static async Task Main(string[] args)
     {
         LogWriter.OutputLevel = Common.Logging.LogLevel.DEBUG;
 
-        await GetWeather();
 
-        await Connection.Logout();
+        APIRequestErrorHandler LoginOn401 = new APIRequestErrorHandler().AddCondition(HttpStatusCode.Unauthorized, async () => await Connection.Login());
 
-        await GetWeather();
+
+        var response = (APIResponse<WeatherForecast[]>)await APIConnection.ExecuteWithAutomaticErrorHandler(async () => await Connection.Get<WeatherForecast[]>("WeatherForecast/GetWeatherForecast"), LoginOn401);
         
-        Thread.Sleep(1000);
-    }
-
-    private static async Task GetWeather()
-    {
-        var response = await FeaturedAPI.ExecuteWithAutomaticErrorHandler(async () => await Connection.Get<WeatherForecast[]>("WeatherForecast/GetWeatherForecast"), LoginOn401);
-
         if (response != null && response.IsValid)
         {
             foreach (WeatherForecast forecast in response.Result!)
             {
-                LogWriter.LogInfo(forecast);
+                LogWriter.LogInfo(forecast.ToString());
             }
         }
+
+
+        Thread.Sleep(1000);
     }
 
 }
