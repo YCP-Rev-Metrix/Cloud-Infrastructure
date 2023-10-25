@@ -9,6 +9,7 @@ using Server.Controllers;
 public class InsertController : ControllerBase
 {
     private readonly UserDB _userDB;
+    private readonly ResearchDB _researchDB;
 
     public InsertController(UserDB userDB) => _userDB = userDB;
    

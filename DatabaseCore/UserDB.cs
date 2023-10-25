@@ -38,7 +38,7 @@ public class UserDB : AbstractDatabase
 
     public void CreateTables()
     {
-        Database = new Database(Server, DatabaseName);
+        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         Database.Create();
 
         // User Table
