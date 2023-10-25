@@ -172,6 +172,34 @@ public class UserDB : AbstractDatabase
         return i != -1;
     }
 
+
+    // Question for braden What is Salt??
+
+    public async Task<bool> InsertUserData(int userid, string firstname, string lastname, string username, byte[] hashedPassword, string email, string phone, string roles)
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string insertQuery = "INSERT INTO [User] (username, salt, roles, password, email, phone) " +
+                             "VALUES (@Username, @Salt, @Roles, @Password, @Email, @Phone)";
+
+        using var command = new SqlCommand(insertQuery, connection);
+        // Set the parameter values
+        command.Parameters.Add("@Username", SqlDbType.VarChar).Value = username;
+
+        // This will need to change
+
+        command.Parameters.Add("@Salt", SqlDbType.VarBinary, 16).Value = username;
+        command.Parameters.Add("@Roles", SqlDbType.VarChar).Value = roles;
+        command.Parameters.Add("@Password", SqlDbType.VarBinary, -1).Value = hashedPassword;
+        command.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
+        command.Parameters.Add("@Phone", SqlDbType.VarChar).Value = phone;
+
+        // Execute the query
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+    }
+
     public async Task<bool> RemoveUser(string username)
     {
         using var connection = new SqlConnection(ConnectionString);
