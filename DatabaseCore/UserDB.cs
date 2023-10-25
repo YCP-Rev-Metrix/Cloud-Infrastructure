@@ -38,7 +38,7 @@ public class UserDB : AbstractDatabase
 
     public void CreateTables()
     {
-        Database = new Database(Server, DatabaseName);
+        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         Database.Create();
 
         // User Table
@@ -146,6 +146,71 @@ public class UserDB : AbstractDatabase
                 userIdKey.Create();
             }
         }
+        // Create Shot Table
+        {
+            // Create new
+            var ShotTable = new Table(Database, "Shot");
+
+            // Shot_id Primary Key 
+            // Primary Key is added after the table is created. 
+            var shot_id = new Column(ShotTable, "shot_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+
+            ShotTable.Columns.Add(shot_id);
+
+            // Frame_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var frame_id = new Column(ShotTable, "frame_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(frame_id);
+
+            // Ball_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var ball_id = new Column(ShotTable, "ball_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(ball_id);
+
+            // Video_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var video_id = new Column(ShotTable, "video_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(video_id);
+
+            // Pins Remaining  
+            var pins_remaining = new Column(ShotTable, "pins_remaining", DataType.Binary(2))
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(pins_remaining);
+
+            // Time Remaining  
+            var time = new Column(ShotTable, "time", DataType.DateTime)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(time);
+
+            // Create the entire table for shot
+            ShotTable.Create();
+
+            // Create the primary key constraint using SQL
+            string sql = "ALTER TABLE [Shot] ADD CONSTRAINT PK_shot_id PRIMARY KEY (shot_id);";
+            Database.ExecuteNonQuery(sql);
+
+            //sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
+            // Database.ExecuteNonQuery(sql);
+        }
     }
 
     public void Kill() => Database.Drop();
@@ -174,6 +239,8 @@ public class UserDB : AbstractDatabase
 
 
     // Question for braden What is Salt??
+    // Insert User Data will need to be finished
+    // Query, and parameters. 
 
     public async Task<bool> InsertUserData(int userid, string firstname, string lastname, string username, byte[] hashedPassword, string email, string phone, string roles)
     {
