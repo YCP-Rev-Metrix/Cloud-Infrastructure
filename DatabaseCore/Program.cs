@@ -12,7 +12,7 @@ internal class Program
         researchDB.CreateTables();
         //researchDB.AddShot(null, default, null, 0, 0, 0);
 
-        // userDB.Kill();
-        // userDB.CreateTables();
+        userDB.Kill();
+        userDB.CreateTables();
     }
 }

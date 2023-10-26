@@ -53,6 +53,20 @@ public class UserDB : AbstractDatabase
             };
             UserTable.Columns.Add(username);
 
+            // firstname
+            var firstname = new Column(UserTable, "firstname", DataType.VarChar(255))
+            {
+                Nullable = false
+            };
+            UserTable.Columns.Add(firstname);
+
+            // lastname
+            var lastname = new Column(UserTable, "lastname", DataType.VarChar(255))
+            {
+                Nullable = false
+            };
+            UserTable.Columns.Add(lastname);
+
             // Salt
             var salt = new Column(UserTable, "salt", DataType.VarBinary(16))
             {
@@ -83,7 +97,7 @@ public class UserDB : AbstractDatabase
             UserTable.Columns.Add(phone);
 
             // ID
-            var id = new Column(UserTable, "id", DataType.BigInt)
+            var id = new Column(UserTable, "user_id", DataType.BigInt)
             {
                 IdentityIncrement = 1,
                 Nullable = false,
@@ -95,7 +109,7 @@ public class UserDB : AbstractDatabase
             UserTable.Create();
 
             // Create the primary key constraint using SQL
-            string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
+            string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (user_id);";
             Database.ExecuteNonQuery(sql);
 
             sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
@@ -136,9 +150,9 @@ public class UserDB : AbstractDatabase
 
                 // User ID
                 var userIdKey = new ForeignKey(TokenTable, "FK_Token_User");
-                var userIdKeyCol = new ForeignKeyColumn(userIdKey, "userid")
+                var userIdKeyCol = new ForeignKeyColumn(userIdKey, "user_id")
                 {
-                    ReferencedColumn = "id"
+                    ReferencedColumn = "user_id"
                 };
                 userIdKey.Columns.Add(userIdKeyCol);
                 userIdKey.ReferencedTable = "User";
@@ -242,21 +256,21 @@ public class UserDB : AbstractDatabase
     // Insert User Data will need to be finished
     // Query, and parameters. 
 
-    public async Task<bool> InsertUserData(int userid, string firstname, string lastname, string username, byte[] hashedPassword, string email, string phone, string roles)
+    public async Task<bool> InsertUserData(int user_id, string firstname, string lastname, string username, byte[] hashedPassword, byte[] salt, string email, string phone, string roles)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [User] (username, salt, roles, password, email, phone) " +
-                             "VALUES (@Username, @Salt, @Roles, @Password, @Email, @Phone)";
+        string insertQuery = "INSERT INTO [User] (username,firstname, lastname, salt, roles, password, email, phone) " +
+                             "VALUES (@Username, @Firstname, @Lastname, @Salt, @Roles, @Password, @Email, @Phone)";
 
         using var command = new SqlCommand(insertQuery, connection);
         // Set the parameter values
+
         command.Parameters.Add("@Username", SqlDbType.VarChar).Value = username;
-
-        // This will need to change
-
-        command.Parameters.Add("@Salt", SqlDbType.VarBinary, 16).Value = username;
+        command.Parameters.Add("@Firstname", SqlDbType.VarChar).Value = firstname;
+        command.Parameters.Add("@Lastname", SqlDbType.VarChar).Value = lastname;
+        command.Parameters.Add("@Salt", SqlDbType.VarBinary, 16).Value = salt;
         command.Parameters.Add("@Roles", SqlDbType.VarChar).Value = roles;
         command.Parameters.Add("@Password", SqlDbType.VarBinary, -1).Value = hashedPassword;
         command.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;

@@ -21,7 +21,7 @@ public class DatabaseUserStore : AbstractUserStore
         {
             stringRoles = string.Join(",", roles);
         }
-        return await ServerState.UserDatabase.AddUser(username, hashed, salt, stringRoles, "phone", "email");
+        return await ServerState.UserDatabase.InsertUserData(userid, firstname, lastname, username, hashed, salt, email, phone, stringRoles);
 
     }
 
