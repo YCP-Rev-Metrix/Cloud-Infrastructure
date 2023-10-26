@@ -5,7 +5,7 @@ using Server;
 using Server.Controllers;
 
 
-
+/*
 namespace Server.Controllers;
 
 [ApiController]
@@ -22,4 +22,5 @@ public class GetDataController : ControllerBase
         return new JsonResult(result);
     }
 }
+*/
     
