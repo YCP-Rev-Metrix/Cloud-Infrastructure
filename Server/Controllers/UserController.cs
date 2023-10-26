@@ -80,4 +80,31 @@ public class UserController : AbstractFeaturedController
     [Authorize]
     [HttpPost("Unregister", Name = "Unregister")]
     public IActionResult Unregister([FromBody] UserIdentification userIdentification) => throw new NotImplementedException();
+
+
+    [HttpPost("GetData", Name = "GetData")]
+    public async Task<IActionResult> GetData([FromBody] InsertUserData userIdentification)
+    {
+        // return the username from the db where you give the user id
+        (bool success, string? result) = await ServerState.UserStore.GetUsername(userIdentification.Userid);
+        // return as a jsonresult
+        return new JsonResult(result);
+    }
+
+    [HttpPost("Insert", Name = "Insert")]
+    public async Task<IActionResult> Insert([FromBody] InsertUserData userIdentification)
+    {
+        // Validate user credentials (e.g., check against a database)
+
+        bool result = await ServerState.UserStore.InsertUser(userIdentification.Userid,
+                                                            userIdentification.Firstname,
+                                                            userIdentification.Lastname,
+                                                            userIdentification.Username,
+                                                            userIdentification.Password,
+                                                            userIdentification.Email,
+                                                            userIdentification.Phone,
+                                                            userIdentification.Role);
+
+        return new JsonResult(result);
+    }
 }

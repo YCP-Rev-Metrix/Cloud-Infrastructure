@@ -12,6 +12,7 @@ namespace Server.Controllers;
 [Route("api/[controller]")]
 public class InsertController : ControllerBase
 {
+    /*
     // private readonly UserDB _userDB;
     // private readonly ResearchDB _researchDB;
 
@@ -32,6 +33,5 @@ public class InsertController : ControllerBase
                                                             userIdentification.Role);
    
         return new JsonResult(result);
-    }
+    }    */
 }
-    
