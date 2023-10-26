@@ -281,6 +281,31 @@ public class UserDB : AbstractDatabase
         return i != -1;
     }
 
+    public async Task<(bool success, string username)> GetUsername(int userid)
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string selectQuery = "SELECT username FROM [User] WHERE user_id = @userid";
+
+        using var command = new SqlCommand(selectQuery, connection);
+        command.Parameters.Add("@userid", SqlDbType.BigInt).Value = userid;
+
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            // Retrieve the "roles" value
+            // string roles = reader["roles"].ToString();
+
+            string? username = reader["username"].ToString();
+            return (true, username);
+        }
+        else
+        {
+            return (false, null);
+        }
+    }
+
     public async Task<bool> RemoveUser(string username)
     {
         using var connection = new SqlConnection(ConnectionString);

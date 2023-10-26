@@ -13,6 +13,7 @@ public class DatabaseUserStore : AbstractUserStore
         return await ServerState.UserDatabase.AddUser(username, hashed, salt, stringRoles, "phone", "email");
     }
 
+    // insert a user into a database filling out all the tables
     public override async Task<bool> InsertUser(int userid, string firstname, string lastname, string username, string password, string email, string phone, string[]? roles)
     {
         (byte[] hashed, byte[] salt) = ServerState.SecurityHandler.SaltHashPassword(password);
@@ -24,7 +25,13 @@ public class DatabaseUserStore : AbstractUserStore
         return await ServerState.UserDatabase.InsertUserData(userid, firstname, lastname, username, hashed, salt, email, phone, stringRoles);
 
     }
-
+    
+    // Getting a username with a given id from the user table
+    public override async Task<(bool success, string? username)> GetUsername(int userid)
+    {
+        (bool success, string? username) = await ServerState.UserDatabase.GetUsername(userid);
+        return (success, username);
+    }
     public override async Task<bool> DeleteUser(string username) => await ServerState.UserDatabase.RemoveUser(username);
 
     public override async Task<(bool success, string[]? roles)> GetRoles(string username)
