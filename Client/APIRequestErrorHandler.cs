@@ -4,12 +4,9 @@ namespace Client;
 
 public class APIRequestErrorHandler
 {
-    private List<(Func<APIResponse, bool> predicate, Func<Task> action)> ErrorHandlers = new();
+    private readonly List<(Func<APIResponse, bool> predicate, Func<Task> action)> ErrorHandlers = new();
 
-    public APIRequestErrorHandler AddCondition(HttpStatusCode statusCode, Func<Task> action)
-    {
-        return AddCondition((response) => response.StatusCode == statusCode, action);
-    }
+    public APIRequestErrorHandler AddCondition(HttpStatusCode statusCode, Func<Task> action) => AddCondition((response) => response.StatusCode == statusCode, action);
 
     public APIRequestErrorHandler AddCondition(Func<APIResponse, bool> predicate, Func<Task> action)
     {
@@ -19,9 +16,10 @@ public class APIRequestErrorHandler
 
     public Func<Task>? Find(APIResponse response)
     {
-        foreach (var (predicate, action) in ErrorHandlers)
+        foreach ((Func<APIResponse, bool> predicate, Func<Task> action) in ErrorHandlers)
         {
-            if (predicate.Invoke(response)) {
+            if (predicate.Invoke(response))
+            {
                 return action;
             }
         }

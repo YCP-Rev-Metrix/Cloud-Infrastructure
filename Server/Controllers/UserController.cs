@@ -1,4 +1,5 @@
-﻿using Common.POCOs;
+﻿using Common.Logging;
+using Common.POCOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,18 +7,19 @@ namespace Server.Controllers;
 // Authorize Refresh Register
 // Logout Unregister ChangePassword
 
-
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : AbstractFeaturedController
 {
     [HttpPost("Authorize", Name = "Authorize")]
-    public IActionResult Authorize([FromBody] UserIdentification userIdentification)
+    public async Task<IActionResult> Authorize([FromBody] UserIdentification userIdentification)
     {
+        LogWriter.LogInfo("Authorize called");
         // Validate user credentials (e.g., check against a database)
-        if (ServerState.UserStore.VerifyUser(userIdentification.Username, userIdentification.Password, out string[]? roles))
+        (bool success, string[]? roles) = await ServerState.UserStore.VerifyUser(userIdentification.Username, userIdentification.Password);
+        if (success)
         {
-            var (authorizationToken, refreshToken) = ServerState.TokenStore.GenerateTokenSet(userIdentification.Username, roles);
+            (string authorizationToken, byte[] refreshToken) = await ServerState.TokenStore.GenerateTokenSet(userIdentification.Username, roles);
 
             // Return the token as a response
             return Ok(new DualToken(authorizationToken, refreshToken));
@@ -28,15 +30,20 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpPost("Refresh", Name = "Refresh")]
-    public IActionResult Refresh([FromBody] SingleToken refreshToken)
+    public async Task<IActionResult> Refresh([FromBody] ByteArrayToken refreshToken)
     {
-        if (ServerState.TokenStore.RemoveAndVerifyRefreshToken(refreshToken.Token, out string? username, out string? newRefreshToken))
+        LogWriter.LogInfo("Refresh called");
+        (bool valid, string? username) = await ServerState.TokenStore.RemoveAndVerifyRefreshToken(refreshToken.Token);
+
+        if (valid && username != null)
         {
-            if (ServerState.UserStore.GetRoles(username, out string[]? roles))
+            (bool success, string[]? roles) = await ServerState.UserStore.GetRoles(username);
+            if (success)
             {
-                string newAuthorizationToken = ServerState.TokenStore.GenerateAuthorizationToken(username, roles);
-                return Ok(new DualToken(newAuthorizationToken, newRefreshToken));
-            } else
+                (string authorization, byte[] refresh) = await ServerState.TokenStore.GenerateTokenSet(username, roles ?? Array.Empty<string>());
+                return Ok(new DualToken(authorization, refresh));
+            }
+            else
             {
                 // If credentials are invalid, return a 403 Forbid response
                 return Forbid();
@@ -47,23 +54,23 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpPost("Register", Name = "Register")]
-    public IActionResult Register([FromBody] UserIdentification userIdentification)
+    public async Task<IActionResult> Register([FromBody] UserIdentification userIdentification)
     {
-        if (ServerState.UserStore.CreateUser(userIdentification.Username, userIdentification.Password, new string[] { "user" })) {
-            return Authorize(userIdentification);
-        }
+        LogWriter.LogInfo("Register called");
+        bool result = await ServerState.UserStore.CreateUser(userIdentification.Username, userIdentification.Password, new string[] { "user" });
 
-        return Conflict();
+        return result ? await Authorize(userIdentification) : Conflict();
     }
 
     [Authorize]
     [HttpDelete("Logout", Name = "Logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
+        LogWriter.LogInfo("Logout called");
         string? username = GetUsername();
         if (username != null)
         {
-            ServerState.TokenStore.RemoveRelatedRefreshTokens(username);
+            await ServerState.TokenStore.RemoveRelatedRefreshTokens(username);
         }
 
         string? jwt = GetJWT();
@@ -77,8 +84,5 @@ public class UserController : AbstractFeaturedController
 
     [Authorize]
     [HttpPost("Unregister", Name = "Unregister")]
-    public IActionResult Unregister([FromBody] UserIdentification userIdentification)
-    {
-        throw new NotImplementedException();
-    }
+    public IActionResult Unregister([FromBody] UserIdentification userIdentification) => throw new NotImplementedException();
 }

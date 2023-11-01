@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Server.Security;
+﻿namespace Server.Security;
 
 public abstract class AbstractUserStore
 {
-    public abstract bool CreateUser(string username, string password, string[]? roles = null);
-    public abstract bool DeleteUser(string username);
+    public abstract Task<bool> CreateUser(string username, string password, string[]? roles = null);
+    public abstract Task<bool> DeleteUser(string username);
 
-    public abstract bool GetRoles(string username, [MaybeNullWhen(true)] out string[]? roles);
-    public abstract bool VerifyUser(string username, string password, [MaybeNullWhen(true)] out string[]? roles);
+    public abstract Task<(bool success, string[]? roles)> GetRoles(string username);
+    public abstract Task<(bool success, string[]? roles)> VerifyUser(string username, string password);
 }

@@ -12,7 +12,7 @@ public class FeaturedAPI : APIConnection
     /// <summary>
     /// Refresh token used to request new JWT
     /// </summary>
-    public string? RefreshToken = null;
+    public byte[]? RefreshToken = null;
 
     public FeaturedAPI(string baseUrl) : base(baseUrl) { }
 
@@ -21,14 +21,14 @@ public class FeaturedAPI : APIConnection
     /// </summary>
     /// <param name="token">JWT to set header to</param>
     public void SetAuthJWT(string token) => Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    
+
     /// <summary>
     /// Attempts to refresh JWT using <see cref="RefreshToken"/>. If unsucessful or not present, login using provided arguments
     /// </summary>
     /// <param name="username">User's username</param>
     /// <param name="password">User's password</param>
     /// <returns></returns>
-    public async Task Login(string username, string password)
+    public async Task<bool> Login(string username, string password)
     {
         if (RefreshToken == null) // Refresh token does not exist
         {
@@ -39,45 +39,51 @@ public class FeaturedAPI : APIConnection
                 SetAuthJWT(token.Result!.TokenA);
                 RefreshToken = token.Result!.TokenB;
                 LogWriter.LogDebug("Logged in successfully");
+                return true;
             }
             else if (token.StatusCode == System.Net.HttpStatusCode.Unauthorized)  // Incorrect credentials
             {
                 LogWriter.LogError("Failed to log in: incorrect credentials");
+                return false;
             }
             else if (token.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges
             {
                 LogWriter.LogError("Failed to log in: incorrect privileges");
+                return false;
             }
             else  // Unknown
             {
                 LogWriter.LogError("Failed to log in: unkown cause");
+                return false;
             }
         }
         else // Refresh token exists
         {
             LogWriter.LogDebug("Attempting to refresh authorization token");
-            APIResponse<DualToken> refresh = await Post<DualToken, SingleToken>("User/Refresh", new SingleToken(RefreshToken));
+            APIResponse<DualToken> refresh = await Post<DualToken, ByteArrayToken>("User/Refresh", new ByteArrayToken(RefreshToken));
             if (refresh.IsValid) // Refreshed token
             {
                 SetAuthJWT(refresh.Result!.TokenA);
                 RefreshToken = refresh.Result!.TokenB;
                 LogWriter.LogDebug("Refreshed authorization token successfully");
+                return true;
             }
             else if (refresh.StatusCode == System.Net.HttpStatusCode.Unauthorized) // Old refresh token
             {
                 RefreshToken = null;
                 LogWriter.LogError("Refresh token no longer valid");
-                await Login(username, password);
+                return await Login(username, password);
             }
             else if (refresh.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges or user not in system
             {
                 RefreshToken = null;
                 LogWriter.LogError("Failed to refresh authorization token: incorrect privileges");
-                await Login(username, password);
+                return await Login(username, password);
             }
             else // Unknown
             {
                 LogWriter.LogError("Failed to refresh authorization token: unkown cause");
+                return false;
             }
         }
     }
@@ -86,13 +92,18 @@ public class FeaturedAPI : APIConnection
     /// Attempts to log user out of their logged-in account
     /// </summary>
     /// <returns></returns>
-    public async Task Logout()
+    public async Task<bool> Logout()
     {
-        var result = await Delete("User/Logout");
+        APIResponse result = await Delete("User/Logout");
         if (result.WasSuccessful)
         {
             RefreshToken = null;
             SetAuthJWT("");
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -104,9 +115,9 @@ public class FeaturedAPI : APIConnection
     /// <returns><see cref="APIResponse"/> representing result of first or second call to <paramref name="apiRequest"/></returns>
     public static async Task<APIResponse> ExecuteWithAutomaticErrorHandler(Func<Task<APIResponse>> apiRequest, APIRequestErrorHandler errorHandler)
     {
-        var result = await apiRequest.Invoke();
+        APIResponse result = await apiRequest.Invoke();
 
-        var action = errorHandler.Find(result);
+        Func<Task>? action = errorHandler.Find(result);
 
         if (action == null) return result;
 
@@ -122,11 +133,11 @@ public class FeaturedAPI : APIConnection
     /// <param name="apiRequest">API request method (<see cref="APIConnection"/> or <see cref="FeaturedAPI"/>) to execute - lambda expressions</param>
     /// <param name="errorHandler">The error handler to execute using predicate (<paramref name="apiRequest"/> result)</param>
     /// <returns><see cref="APIResponse{TResult}"/> representing result of first or second call to <paramref name="apiRequest"/></returns>
-    public static async Task<APIResponse<TResult>> ExecuteWithAutomaticErrorHandler<TResult>(Func<Task<APIResponse<TResult>>> apiRequest, APIRequestErrorHandler errorHandler)
+    public static async Task<APIResponse<TResult>> ExecuteWithAutomaticErrorHandler<TResult>(Func<Task<APIResponse<TResult>>> apiRequest, APIRequestErrorHandler errorHandler) where TResult : POCO
     {
-        var result = await apiRequest.Invoke();
+        APIResponse<TResult> result = await apiRequest.Invoke();
 
-        var action = errorHandler.Find(result);
+        Func<Task>? action = errorHandler.Find(result);
 
         if (action == null) return result;
 

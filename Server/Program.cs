@@ -1,16 +1,15 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Server;
 using Server.Middleware;
-using Server.Security;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        //_ = builder.WebHost.UseSetting("https_port", "443");
 
         _ = builder.Services.AddScoped<VerifyJWTBlacklistMiddleware>();
 
@@ -34,7 +33,7 @@ internal class Program
                 ValidateLifetime = true,
                 ValidIssuer = Config.AuthIssuer,
                 ValidAudience = Config.AuthAudience,
-                IssuerSigningKey = SecurityHandler.AuthorizationSigningTokenKey,
+                IssuerSigningKey = ServerState.SecurityHandler.AuthorizationSigningTokenKey,
                 ClockSkew = TimeSpan.FromMinutes(5)
             };
         });
@@ -48,8 +47,8 @@ internal class Program
             _ = app.UseSwaggerUI();
         }
 
-        //app.UseHttpsRedirection();
-        
+        // app.UseHttpsRedirection();
+
         // Verify token not blacklisted
         _ = app.UseMiddleware<VerifyJWTBlacklistMiddleware>();
 

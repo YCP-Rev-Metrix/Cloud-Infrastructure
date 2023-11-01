@@ -1,7 +1,7 @@
 ﻿namespace Common.POCOs;
-public class UserIdentification : POCO
+public class InsertUserData : POCO
 {
-    public UserIdentification(string username, string password)
+    public InsertUserData(string username, string password)
     {
         Username = username;
         Password = password;

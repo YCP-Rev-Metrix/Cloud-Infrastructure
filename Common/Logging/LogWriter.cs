@@ -9,9 +9,19 @@ public static class LogWriter
 
     private static readonly string exePath = Directory.GetCurrentDirectory() ?? throw new Exception();
     private static readonly string logName = DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + ".log";
-    private static readonly string logPath = Path.Combine(exePath, "Logs", logName);
+    private static readonly string logDirectoryPath = Path.Combine(exePath, "Logs");
+    private static readonly string logPath = Path.Combine(logDirectoryPath, logName);
 
     private static readonly SingleThreadedActionExecutor<LogLevel, string, string, string, int> actionExecutor = new(Log);
+
+    // Ensure the "Logs" directory exists
+    static LogWriter()
+    {
+        if (!Directory.Exists(logDirectoryPath))
+        {
+            _ = Directory.CreateDirectory(logDirectoryPath);
+        }
+    }
 
     // Called via actionExecutor
     private static void Log(LogLevel logLevel, string message, string callerFilePath, string callerMemberName, int callerLineNumber)
