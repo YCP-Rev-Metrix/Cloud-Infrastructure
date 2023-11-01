@@ -1,26 +1,23 @@
-﻿using Common.Logging;
-using Common.POCOs;
+﻿using Common.POCOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Security;
 
 namespace Server.Controllers;
-
-// Authorize Register Logout Unregister ChangePassword Refresh
+// Authorize Refresh Register
+// Logout Unregister ChangePassword
 
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController : AbstractFeaturedController
 {
-    public static readonly AbstractTokenStore TokenStore = new NaiveTokenStore(TimeSpan.FromSeconds(8), TimeSpan.FromSeconds(40), TimeSpan.FromMinutes(5));
-
     [HttpPost("Authorize", Name = "Authorize")]
     public IActionResult Authorize([FromBody] UserIdentification userIdentification)
     {
         // Validate user credentials (e.g., check against a database)
-        if (Users.ValidateAndGetRoles(userIdentification.Username, userIdentification.Password, out string[]? roles))
+        if (ServerState.UserStore.VerifyUser(userIdentification.Username, userIdentification.Password, out string[]? roles))
         {
-            var (authorizationToken, refreshToken) = TokenStore.GenerateTokenSet(userIdentification.Username, roles);
+            var (authorizationToken, refreshToken) = ServerState.TokenStore.GenerateTokenSet(userIdentification.Username, roles);
 
             // Return the token as a response
             return Ok(new DualToken(authorizationToken, refreshToken));
@@ -33,11 +30,11 @@ public class UserController : ControllerBase
     [HttpPost("Refresh", Name = "Refresh")]
     public IActionResult Refresh([FromBody] SingleToken refreshToken)
     {
-        if (TokenStore.RemoveAndVerifyRefreshToken(refreshToken.Token, out string? username, out string? newRefreshToken))
+        if (ServerState.TokenStore.RemoveAndVerifyRefreshToken(refreshToken.Token, out string? username, out string? newRefreshToken))
         {
-            if (Users.GetRoles(username, out string[]? roles))
+            if (ServerState.UserStore.GetRoles(username, out string[]? roles))
             {
-                string newAuthorizationToken =  TokenStore.GenerateAuthorizationToken(username, roles);
+                string newAuthorizationToken = ServerState.TokenStore.GenerateAuthorizationToken(username, roles);
                 return Ok(new DualToken(newAuthorizationToken, newRefreshToken));
             } else
             {
@@ -47,5 +44,41 @@ public class UserController : ControllerBase
         }
 
         return Unauthorized();
+    }
+
+    [HttpPost("Register", Name = "Register")]
+    public IActionResult Register([FromBody] UserIdentification userIdentification)
+    {
+        if (ServerState.UserStore.CreateUser(userIdentification.Username, userIdentification.Password, new string[] { "user" })) {
+            return Authorize(userIdentification);
+        }
+
+        return Conflict();
+    }
+
+    [Authorize]
+    [HttpDelete("Logout", Name = "Logout")]
+    public IActionResult Logout()
+    {
+        string? username = GetUsername();
+        if (username != null)
+        {
+            ServerState.TokenStore.RemoveRelatedRefreshTokens(username);
+        }
+
+        string? jwt = GetJWT();
+        if (jwt != null)
+        {
+            ServerState.TokenStore.BlacklistAuthorizationToken(jwt);
+        }
+
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpPost("Unregister", Name = "Unregister")]
+    public IActionResult Unregister([FromBody] UserIdentification userIdentification)
+    {
+        throw new NotImplementedException();
     }
 }

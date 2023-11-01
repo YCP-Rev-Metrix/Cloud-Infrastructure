@@ -6,6 +6,9 @@ using System.Security.Claims;
 
 namespace Server.Security;
 
+/// <summary>
+/// Object to generate, retrieve, renew, verify, and destroy tokens relating to security (JWT & refresh)
+/// </summary>
 public abstract class AbstractTokenStore
 {
     private TimeSpan DefaultAuthorizationExpiration;
@@ -20,7 +23,7 @@ public abstract class AbstractTokenStore
     }
 
     public string GenerateAuthorizationToken(string username, string[] roles) => GenerateAuthorizationToken(username, roles, DefaultAuthorizationExpiration);
-    public string GenerateAuthorizationToken(string username, string[] roles, TimeSpan expiration)
+    public string GenerateAuthorizationToken(string username, string[]? roles, TimeSpan expiration)
     {
         var claims = new List<Claim>
         {
@@ -30,10 +33,14 @@ public abstract class AbstractTokenStore
             new Claim(JwtRegisteredClaimNames.Aud, Config.AuthAudience), // Audience
         };
 
-        foreach (string role in roles)
+        if (roles != null)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        };
+            foreach (string role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            };
+        }
+        
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -84,6 +91,10 @@ public abstract class AbstractTokenStore
         return false;
     }
 
+    public abstract void RemoveRelatedRefreshTokens(string username);
+
     public abstract bool StoreRefreshToken(string token, string username, DateTime expiration);
     public abstract (string token, string username, DateTime expiration)? RemoveRefreshToken(string token);
+    public abstract void BlacklistAuthorizationToken(string jwt);
+    public abstract bool IsAuthorizationBlacklisted(string jwt);
 }

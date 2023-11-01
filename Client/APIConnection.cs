@@ -14,11 +14,10 @@ namespace Client;
 /// <item>Delete: Delete existing resource</item>
 /// </list>
 /// </summary>
-internal class APIConnection
+public class APIConnection
 {
-    private readonly string URL; // https://localhost:7238/api/
-    private readonly HttpClient Client = new();
-    private string? RefreshToken = null;
+    protected readonly string URL; // https://localhost:7238/api/
+    protected readonly HttpClient Client = new();
 
     public APIConnection(string baseUrl)
     {
@@ -507,7 +506,6 @@ internal class APIConnection
     }
     #endregion
 
-    #region Helpers
     private static async Task<APIResponse<TResult>> GenerateResult<TResult>(string requestType, HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.IsSuccessStatusCode)
@@ -535,102 +533,4 @@ internal class APIConnection
 
         return new APIResponse(response);
     }
-
-    public void SetAuthJWT(string token) => Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    #endregion
-
-    #region Scripts
-    public async Task Login()
-    {
-        if (RefreshToken == null) // Refresh token does not exist
-        {
-            LogWriter.LogDebug("Attempting to log in using username & password");
-            APIResponse<DualToken> token = await Post<DualToken, UserIdentification>("User/Authorize", new("admin", "root"));
-            if (token.IsValid) // Logged in with user credentials
-            {
-                SetAuthJWT(token.Result!.TokenA);
-                RefreshToken = token.Result!.TokenB;
-                LogWriter.LogDebug("Logged in successfully");
-            }
-            else if (token.StatusCode == System.Net.HttpStatusCode.Unauthorized)  // Incorrect credentials
-            {
-                LogWriter.LogError("Failed to log in: incorrect credentials");
-            }
-            else if (token.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges
-            {
-                LogWriter.LogError("Failed to log in: incorrect privileges");
-            }
-            else  // Unknown
-            {
-                LogWriter.LogError("Failed to log in: unkown cause");
-            }
-        }
-        else // Refresh token exists
-        {
-            LogWriter.LogDebug("Attempting to refresh authorization token");
-            APIResponse<DualToken> refresh = await Post<DualToken, SingleToken>("User/Refresh", new SingleToken(RefreshToken));
-            if (refresh.IsValid) // Refreshed token
-            {
-                SetAuthJWT(refresh.Result!.TokenA);
-                RefreshToken = refresh.Result!.TokenB;
-                LogWriter.LogDebug("Refreshed authorization token successfully");
-            }
-            else if (refresh.StatusCode == System.Net.HttpStatusCode.Unauthorized) // Old refresh token
-            {
-                RefreshToken = null;
-                LogWriter.LogError("Refresh token no longer valid");
-                await Login();
-            }
-            else if (refresh.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges or user not in system
-            {
-                RefreshToken = null;
-                LogWriter.LogError("Failed to refresh authorization token: incorrect privileges");
-                await Login();
-            }
-            else // Unknown
-            {
-                LogWriter.LogError("Failed to refresh authorization token: unkown cause");
-            }
-        }
-    }
-    
-    public async Task<APIResponse> ExecuteRequestWithAutomatic401Handling(Func<Task<APIResponse>> apiRequest)
-    {
-        var result = await apiRequest.Invoke();
-
-        if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            await Login();
-            return await apiRequest.Invoke();
-        }
-
-        return result;
-    }
-
-    public async Task<APIResponse<TResult>> ExecuteRequestWithAutomatic401Handling<TResult>(Func<Task<APIResponse<TResult>>> apiRequest)
-    {
-        var result = await apiRequest.Invoke();
-
-        if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            await Login();
-            return await apiRequest.Invoke();
-        }
-
-        return result;
-    }
-
-    public static async Task<APIResponse> ExecuteWithAutomaticErrorHandler(Func<Task<APIResponse>> apiRequest, APIRequestErrorHandler errorHandler)
-    {
-        var result = await apiRequest.Invoke();
-
-        var action = errorHandler.Find(result);
-
-        if (action == null) return result;
-
-        await action.Invoke();
-
-        return await apiRequest.Invoke();
-    }
-    #endregion
 }
