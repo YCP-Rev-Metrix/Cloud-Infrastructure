@@ -78,6 +78,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -133,6 +136,19 @@
           "Test"
         ],
         "operationId": "TestAuthorize",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Test/TestAuthenticateAdmin": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "operationId": "TestAuthenticateAdmin",
         "responses": {
           "200": {
             "description": "Success"
