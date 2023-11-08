@@ -26,7 +26,6 @@ public class UserDB : AbstractDatabase
         {
             return;
         }
-        
 
         // User Table
         {
@@ -200,30 +199,30 @@ public class UserDB : AbstractDatabase
         }
     }
 
-    public async Task Kill() {
+    public async Task Kill()
+    {
 
-            using var connection = new SqlConnection(ConnectionString);
-            await connection.OpenAsync();
-            string noConstraint = "Use [revmetrix-u] ALTER TABLE [User] NOCHECK CONSTRAINT all";
-            using var command = new SqlCommand(noConstraint, connection);
-            command.ExecuteNonQuery();
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+        string noConstraint = "Use [revmetrix-u] ALTER TABLE [User] NOCHECK CONSTRAINT all";
+        using var command = new SqlCommand(noConstraint, connection);
+        _ = command.ExecuteNonQuery();
 
+        //using var connection2 = new SqlConnection(ConnectionString);
+        //connection2.OpenAsync();
+        string dropUser = "DROP TABLE [User]";
+        using var command2 = new SqlCommand(dropUser, connection);
+        _ = command2.ExecuteNonQuery();
 
-            //using var connection2 = new SqlConnection(ConnectionString);
-            //connection2.OpenAsync();
-            string dropUser = "DROP TABLE [User]";
-            using var command2 = new SqlCommand(dropUser, connection);
-            command2.ExecuteNonQuery();
+        //using var connection3 = new SqlConnection(ConnectionString);
+        //connection3.OpenAsync();
+        string dropShot = "DROP TABLE [Shot]";
+        using var command3 = new SqlCommand(dropShot, connection);
+        _ = command3.ExecuteNonQuery();
 
-            //using var connection3 = new SqlConnection(ConnectionString);
-            //connection3.OpenAsync();
-            string dropShot = "DROP TABLE [Shot]";
-            using var command3 = new SqlCommand(dropShot, connection);
-            command3.ExecuteNonQuery();
+    }
 
-        }
-
-        public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
+    public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
@@ -384,19 +383,10 @@ public class UserDB : AbstractDatabase
         return i != -1;
     }
 
-
     public bool DoesExist()
     {
         Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
-        if (!Server.Databases.Contains(DatabaseName))
-        {
-            return true;
-        }
-        // Otherwise breakout of createTables
-        else
-        {
-            return false;
-        }
+        return !Server.Databases.Contains(DatabaseName);
     }
 
 }

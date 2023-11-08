@@ -12,6 +12,8 @@ public class InsertController : ControllerBase
 
     public InsertController(UserDB userDB) => _userDB = userDB;
 
+    [ProducesResponseType(typeof(DualToken), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [HttpPost("Insert", Name = "Insert")]
     public async Task<IActionResult> Authorize([FromBody] UserIdentification userIdentification)
     {
