@@ -14,8 +14,4 @@
     <Folder Include="Logs\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="xunit" Version="2.6.1" />
-  </ItemGroup>
-
 </Project>
