@@ -1,4 +1,4 @@
-namespace ServerTests;
+namespace ClientTests;
 
 public class UnitTest1
 {
