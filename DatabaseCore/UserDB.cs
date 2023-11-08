@@ -14,9 +14,11 @@ public class UserDB : AbstractDatabase
     public void CreateTables()
     {
         Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+        
 
         // Check to see if the database is in the server
         // If not create the database and then create the tables
+       /*
         if (!Server.Databases.Contains(DatabaseName))
         {
             Database.Create();
@@ -24,62 +26,71 @@ public class UserDB : AbstractDatabase
         // Otherwise breakout of createTables
         else
         {
+            Console.WriteLine("Breaking ");
             return;
         }
-        
+       */
 
         // User Table
         {
+            
+            Console.WriteLine("Attempting to create the user table");
+            Console.WriteLine(Database.Name);
             // Create new
-            var UserTable = new Table(Database, "User");
+            var Usertable = new Table(Database, "User");
 
             // Username
-            var username = new Column(UserTable, "username", DataType.VarChar(255))
+            var username = new Column(Usertable, "username", DataType.VarChar(255))
             {
                 Nullable = false
             };
-            UserTable.Columns.Add(username);
+            Usertable.Columns.Add(username);
 
             // Salt
-            var salt = new Column(UserTable, "salt", DataType.VarBinary(16))
+            var salt = new Column(Usertable, "salt", DataType.VarBinary(16))
             {
                 Nullable = false
             };
-            UserTable.Columns.Add(salt);
+            Usertable.Columns.Add(salt);
 
             // Roles
-            var roles = new Column(UserTable, "roles", DataType.VarChar(255))
+            var roles = new Column(Usertable, "roles", DataType.VarChar(255))
             {
                 Nullable = false
             };
-            UserTable.Columns.Add(roles);
+            Usertable.Columns.Add(roles);
 
             // Password
-            var password = new Column(UserTable, "password", DataType.VarBinaryMax)
+            var password = new Column(  Usertable, "password", DataType.VarBinaryMax)
             {
                 Nullable = false
             };
-            UserTable.Columns.Add(password);
+            Usertable.Columns.Add(password);
 
             // Email
-            var email = new Column(UserTable, "email", DataType.VarChar(255));
-            UserTable.Columns.Add(email);
+            var email = new Column( Usertable, "email", DataType.VarChar(255));
+            Usertable.Columns.Add(email);
 
             // Phone
-            var phone = new Column(UserTable, "phone", DataType.VarChar(255));
-            UserTable.Columns.Add(phone);
+            var phone = new Column(Usertable, "phone", DataType.VarChar(255));
+            Usertable.Columns.Add(phone);
 
             // ID
-            var id = new Column(UserTable, "id", DataType.BigInt)
+            var id = new Column(Usertable, "id", DataType.BigInt)
             {
                 IdentityIncrement = 1,
                 Nullable = false,
                 IdentitySeed = 1,
                 Identity = true
             };
-            UserTable.Columns.Add(id);
+            Usertable.Columns.Add(id);
 
-            UserTable.Create();
+            Console.WriteLine("We get all the way down here");
+            // The error we are getting is right here
+            // Why? 
+            Console.WriteLine(Usertable.Parent);
+            Usertable.Create();
+            
 
             // Create the primary key constraint using SQL
             string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
@@ -88,7 +99,7 @@ public class UserDB : AbstractDatabase
             sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
             Database.ExecuteNonQuery(sql);
         }
-
+            
         // Token Table
         {
             // Create new

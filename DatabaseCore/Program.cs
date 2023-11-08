@@ -10,7 +10,17 @@ internal class Program
         researchDB.Kill();
         researchDB.CreateTables();
 
-        userDB.Kill();
-        userDB.CreateTables();
+        if(userDB.DoesExist())
+        {
+            userDB.Kill();
+            userDB.CreateTables();
+        }
+        else
+        {
+            Console.WriteLine("The Database doesn't exist");
+            userDB.CreateTables();
+        }
+
+        
     }
 }
