@@ -1,11 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<PackageId>RevMetrix.Client.Test</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>UnicycleUnicorn</Authors>
+	<Company>RevMetrix</Company>
+	<IsPackable>true</IsPackable>
+	<Pack>true</Pack>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
@@ -13,5 +18,4 @@
   <ItemGroup>
     <Folder Include="Logs\" />
   </ItemGroup>
-
 </Project>
