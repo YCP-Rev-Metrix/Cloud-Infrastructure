@@ -28,28 +28,11 @@ public class DatabaseUserStore : AbstractUserStore
         {
             string[] roles = result.roles.Split(',');
             byte[] hashedPassword = ServerState.SecurityHandler.SaltHashPassword(password, result.salt);
-            return AreByteArraysEqual(hashedPassword, result.hashedPassword) ? ((bool success, string[]? roles))(true, roles) : ((bool success, string[]? roles))(false, roles);
+            return hashedPassword.SequenceEqual(result.hashedPassword) ? ((bool success, string[]? roles))(true, roles) : ((bool success, string[]? roles))(false, roles);
         }
         else
         {
             return (false, null);
         }
-    }
-
-    public static bool AreByteArraysEqual(byte[] array1, byte[] array2)
-    {
-        if (array1 == null || array2 == null)
-            return false;
-
-        if (array1.Length != array2.Length)
-            return false;
-
-        for (int i = 0; i < array1.Length; i++)
-        {
-            if (array1[i] != array2[i])
-                return false;
-        }
-
-        return true;
     }
 }
