@@ -11,12 +11,32 @@ public class ResearchDB : AbstractDatabase
 
     }
 
-    public void Kill() => Database?.DropIfExists();
+    public async Task Kill()
+    {
+        // Database?.DropIfExists();
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+        string noConstraint = "Use [revmetrix-r] ALTER TABLE [Shot] NOCHECK CONSTRAINT all";
+        using var command = new SqlCommand(noConstraint, connection);
+        _ = command.ExecuteNonQuery();
 
+        string dropShot = "DROP TABLE [Shot]";
+        using var command2 = new SqlCommand(dropShot, connection);
+        _ = command2.ExecuteNonQuery();
+
+    }
     public void CreateTables()
     {
         Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
-        Database.Create();
+        if (!Server.Databases.Contains(DatabaseName))
+        {
+            Database.Create();
+        }
+        // Otherwise breakout of createTables
+        else
+        {
+            return;
+        }
 
         //Shot table 
         {

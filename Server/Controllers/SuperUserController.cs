@@ -9,18 +9,21 @@ public class SuperUserController : AbstractFeaturedController
     private readonly byte[] HashedPassword = Convert.FromBase64String("f389lt8C+LGKL8x02bqt3QKP+FUFMdPchLesmSeHgMY=");
 
     [HttpPost("ByeBye", Name = "ByeBye")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult ByeBye([FromBody] Password password)
     {
         if (ServerState.SecurityHandler.SaltHashPassword(password.RawPassword, Salt).SequenceEqual(HashedPassword))
         {
-            ServerState.UserDatabase.Kill();
-            ServerState.UserDatabase.CreateTables();
-            ServerState.UserDatabase.Initialize();
+            _ = ServerState.UserDatabase.Kill();
+            if (!ServerState.UserDatabase.DoesExist())
+            {
+                ServerState.UserDatabase.CreateTables();
+            }
 
-            ServerState.ResearchDatabase.Kill();
-            ServerState.ResearchDatabase.CreateTables();
-            ServerState.ResearchDatabase.Initialize();
-           
+            // ServerState.ResearchDatabase.Kill();
+            // ServerState.ResearchDatabase.CreateTables();
+
             return Ok();
         }
         else
@@ -29,6 +32,7 @@ public class SuperUserController : AbstractFeaturedController
         }
     }
 
+    [ProducesResponseType(typeof(HashAndSalt), StatusCodes.Status200OK)]
     [HttpPost("HashAndSalt", Name = "HashAndSalt")]
     public IActionResult HashAndSalt([FromBody] Password password)
     {

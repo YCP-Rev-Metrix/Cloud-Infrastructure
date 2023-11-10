@@ -14,7 +14,18 @@ public class UserDB : AbstractDatabase
     public void CreateTables()
     {
         Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
-        Database.Create();
+
+        // Check to see if the database is in the server
+        // If not create the database and then create the tables
+        if (!Server.Databases.Contains(DatabaseName))
+        {
+            Database.Create();
+        }
+        // Otherwise breakout of createTables
+        else
+        {
+            return;
+        }
 
         // User Table
         {
@@ -121,9 +132,95 @@ public class UserDB : AbstractDatabase
                 userIdKey.Create();
             }
         }
+        // Create Shot Table
+        {
+            // Create new
+            var ShotTable = new Table(Database, "Shot");
+
+            // Shot_id Primary Key 
+            // Primary Key is added after the table is created. 
+            var shot_id = new Column(ShotTable, "shot_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+
+            ShotTable.Columns.Add(shot_id);
+
+            // Frame_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var frame_id = new Column(ShotTable, "frame_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(frame_id);
+
+            // Ball_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var ball_id = new Column(ShotTable, "ball_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(ball_id);
+
+            // Video_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var video_id = new Column(ShotTable, "video_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(video_id);
+
+            // Pins Remaining  
+            var pins_remaining = new Column(ShotTable, "pins_remaining", DataType.Binary(2))
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(pins_remaining);
+
+            // Time Remaining  
+            var time = new Column(ShotTable, "time", DataType.DateTime)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(time);
+
+            // Create the entire table for shot
+            ShotTable.Create();
+
+            // Create the primary key constraint using SQL
+            string sql = "ALTER TABLE [Shot] ADD CONSTRAINT PK_shot_id PRIMARY KEY (shot_id);";
+            Database.ExecuteNonQuery(sql);
+
+            //sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
+            // Database.ExecuteNonQuery(sql);
+        }
     }
 
-    public void Kill() => Database?.DropIfExists();
+    public async Task Kill()
+    {
+
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+        string noConstraint = "Use [revmetrix-u] ALTER TABLE [User] NOCHECK CONSTRAINT all";
+        using var command = new SqlCommand(noConstraint, connection);
+        _ = command.ExecuteNonQuery();
+
+        //using var connection2 = new SqlConnection(ConnectionString);
+        //connection2.OpenAsync();
+        string dropUser = "DROP TABLE [User]";
+        using var command2 = new SqlCommand(dropUser, connection);
+        _ = command2.ExecuteNonQuery();
+
+        //using var connection3 = new SqlConnection(ConnectionString);
+        //connection3.OpenAsync();
+        string dropShot = "DROP TABLE [Shot]";
+        using var command3 = new SqlCommand(dropShot, connection);
+        _ = command3.ExecuteNonQuery();
+
+    }
 
     public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
     {
@@ -285,4 +382,11 @@ public class UserDB : AbstractDatabase
         int i = await command.ExecuteNonQueryAsync();
         return i != -1;
     }
+
+    public bool DoesExist()
+    {
+        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+        return !Server.Databases.Contains(DatabaseName);
+    }
+
 }
