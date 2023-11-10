@@ -4,6 +4,15 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+       publish:
+          description: 'Trigger the publish workflow'
+          required: false
+          default: 'false'
+       nuget:
+          description: 'Trigger the NuGet workflow'
+          required: false
+          default: 'false'
 
 jobs:
   build:
@@ -125,7 +134,7 @@ jobs:
     needs: [build]
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' && github.event.inputs.publish == 'true'
     steps:
       - uses: actions/checkout@v1
       - name: Login to Docker Hub
