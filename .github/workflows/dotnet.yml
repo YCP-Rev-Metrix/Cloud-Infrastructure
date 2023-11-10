@@ -11,6 +11,7 @@ on:
          required: true
          default: false
        nuget:
+         type: boolean
          description: 'Publish Client NuGet Package'
          required: true
          default: false
