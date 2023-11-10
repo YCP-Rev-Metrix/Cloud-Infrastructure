@@ -89,6 +89,8 @@ jobs:
         with:
           name: pack-artifacts
           path: C:/clientpackage
+      - name: Publish NuGet Package
+        run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.API_KEY }} --source https://api.nuget.org/v3/index.json --no-symbols
 
   generate-swagger:
     runs-on: ubuntu-latest
