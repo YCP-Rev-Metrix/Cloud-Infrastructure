@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Generate NuGet
-      run:  dotnet pack "Client/Client.csproj" -p:IncludeReferencedProjects=true -c Release -o C:/clientpackage
+      run:  dotnet pack -p:IncludeReferencedProjects=true -c Release -o C:/clientpackage
     - name: Upload NuGet artifacts
       uses: actions/upload-artifact@v2
       with:
