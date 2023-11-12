@@ -45,9 +45,10 @@ jobs:
     steps:
       - name: Auto-increment version
         run: |
-          cd ../
+          cd ../../
           echo "Current working directory: $(pwd)"
           ls -lR
+          sleep 5
           # Define the path to your .csproj files
           client_csproj_file="./Client/Client.csproj"
           common_csproj_file="./Common/Common.csproj"
