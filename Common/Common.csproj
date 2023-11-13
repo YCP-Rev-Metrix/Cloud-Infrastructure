@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageId>RevMetrix.Common.Test</PackageId>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <Authors>RevMetrix</Authors>
         <Company>RevMetrix</Company>
         <Nullable>enable</Nullable>
