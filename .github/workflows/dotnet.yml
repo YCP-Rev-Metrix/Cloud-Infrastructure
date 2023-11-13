@@ -5,16 +5,16 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-       publish:
-         type: boolean
-         description: 'Publish API to Digital Ocean'
-         required: true
-         default: false
-       nuget:
-         type: boolean
-         description: 'Publish Client NuGet Package'
-         required: true
-         default: false
+        publish:
+          type: boolean
+          description: 'Publish API to Digital Ocean'
+          required: true
+          default: false
+        nuget:
+          type: boolean
+          description: 'Publish Client NuGet Package'
+          required: true
+          default: false
 
 jobs:
   build:
@@ -43,12 +43,13 @@ jobs:
     needs: [build]
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.nuget
     steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
       - name: Auto-increment version
         run: |
-          cd ../../
-          echo "Current working directory: $(pwd)"
-          ls -lR
-          sleep 5
           # Define the path to your .csproj files
           client_csproj_file="./Client/Client.csproj"
           common_csproj_file="./Common/Common.csproj"
