@@ -909,16 +909,18 @@ public class UserDB : AbstractDatabase
 
     }
 
-    public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
+    public async Task<bool> AddUser(string firstname, string lastname, string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [User] (username, salt, roles, password, email, phone) " +
-                             "VALUES (@Username, @Salt, @Roles, @Password, @Email, @Phone)";
+        string insertQuery = "INSERT INTO [User] (firstname, lastname, username, salt, roles, password, email, phone) " +
+                             "VALUES (@Firstname, @Lastname, @Username, @Salt, @Roles, @Password, @Email, @Phone)";
 
         using var command = new SqlCommand(insertQuery, connection);
         // Set the parameter values
+        command.Parameters.Add("@Firstname", SqlDbType.VarChar).Value = firstname;
+        command.Parameters.Add("@Lastname", SqlDbType.VarChar).Value = lastname;
         command.Parameters.Add("@Username", SqlDbType.VarChar).Value = username;
         command.Parameters.Add("@Salt", SqlDbType.VarBinary, 16).Value = salt;
         command.Parameters.Add("@Roles", SqlDbType.VarChar).Value = roles;

@@ -2,7 +2,7 @@
 
 public class DatabaseUserStore : AbstractUserStore
 {
-    public override async Task<bool> CreateUser(string username, string password, string[]? roles = null)
+    public override async Task<bool> CreateUser(string firstname, string lastname, string username, string password, string email, string phone_number, string[]? roles = null)
     {
         (byte[] hashed, byte[] salt) = ServerState.SecurityHandler.SaltHashPassword(password);
         string stringRoles = "";
@@ -10,7 +10,7 @@ public class DatabaseUserStore : AbstractUserStore
         {
             stringRoles = string.Join(",", roles);
         }
-        return await ServerState.UserDatabase.AddUser(username, hashed, salt, stringRoles, "phone", "email");
+        return await ServerState.UserDatabase.AddUser(firstname, lastname, username, hashed, salt, stringRoles, phone_number, email);
     }
 
     public override async Task<bool> DeleteUser(string username) => await ServerState.UserDatabase.RemoveUser(username);

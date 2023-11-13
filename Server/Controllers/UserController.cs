@@ -65,7 +65,13 @@ public class UserController : AbstractFeaturedController
     public async Task<IActionResult> Register([FromBody] UserIdentification userIdentification)
     {
         LogWriter.LogInfo("Register called");
-        bool result = await ServerState.UserStore.CreateUser(userIdentification.Username, userIdentification.Password, new string[] { "user" });
+        bool result = await ServerState.UserStore.CreateUser( userIdentification.Firstname,
+                                                              userIdentification.Lastname,
+                                                              userIdentification.Username,
+                                                              userIdentification.Password,
+                                                              userIdentification.Email,
+                                                              userIdentification.Phone_number,
+                                                              new string[] { "user" });
 
         return result ? await Authorize(userIdentification) : Conflict();
     }
