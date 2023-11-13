@@ -95,7 +95,7 @@ jobs:
           name: pack-artifacts
           path: C:/clientpackage
       - name: Publish NuGet Package
-        run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols
+        run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.NUGET_CLIENT_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols
 
   generate-swagger:
     runs-on: ubuntu-latest
@@ -154,7 +154,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} 
-             -p '${{ secrets.DOCKER_PASS }}'
+              -p '${{ secrets.DOCKER_PASS }}'
       - name: Build Docker image
         run: |
           echo "REPO - $REPO"
