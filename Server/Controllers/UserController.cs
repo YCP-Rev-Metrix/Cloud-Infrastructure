@@ -12,6 +12,8 @@ namespace Server.Controllers;
 public class UserController : AbstractFeaturedController
 {
     [HttpPost("Authorize", Name = "Authorize")]
+    [ProducesResponseType(typeof(DualToken), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Authorize([FromBody] UserIdentification userIdentification)
     {
         LogWriter.LogInfo("Authorize called");
@@ -30,6 +32,9 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpPost("Refresh", Name = "Refresh")]
+    [ProducesResponseType(typeof(DualToken), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Refresh([FromBody] ByteArrayToken refreshToken)
     {
         LogWriter.LogInfo("Refresh called");
@@ -54,6 +59,9 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpPost("Register", Name = "Register")]
+    [ProducesResponseType(typeof(DualToken), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] UserIdentification userIdentification)
     {
         LogWriter.LogInfo("Register called");
@@ -64,6 +72,7 @@ public class UserController : AbstractFeaturedController
 
     [Authorize]
     [HttpDelete("Logout", Name = "Logout")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Logout()
     {
         LogWriter.LogInfo("Logout called");
@@ -84,5 +93,6 @@ public class UserController : AbstractFeaturedController
 
     [Authorize]
     [HttpPost("Unregister", Name = "Unregister")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Unregister([FromBody] UserIdentification userIdentification) => throw new NotImplementedException();
 }

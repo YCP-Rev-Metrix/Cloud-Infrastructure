@@ -795,7 +795,8 @@ public class UserDB : AbstractDatabase
 
     }
 
-    public async Task Kill() {
+    public async Task Kill()
+    {
 
             using var connection = new SqlConnection(ConnectionString);
             await connection.OpenAsync();
@@ -1048,7 +1049,6 @@ public class UserDB : AbstractDatabase
         int i = await command.ExecuteNonQueryAsync();
         return i != -1;
     }
-
 
     public bool DoesExist()
     {

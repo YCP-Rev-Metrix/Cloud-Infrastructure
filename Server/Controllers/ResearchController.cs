@@ -17,6 +17,7 @@ public class ResearchController : AbstractFeaturedController
     private readonly float y = random.NextInt64();
     private readonly float z = random.NextInt64();
 
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [HttpPost("Testing", Name = "Testing")]
     public async Task<IActionResult> CreateShot() =>
 

@@ -18,11 +18,11 @@ public class ResearchDB : AbstractDatabase
         await connection.OpenAsync();
         string noConstraint = "Use [revmetrix-r] ALTER TABLE [Shot] NOCHECK CONSTRAINT all";
         using var command = new SqlCommand(noConstraint, connection);
-        command.ExecuteNonQuery();
+        _ = command.ExecuteNonQuery();
 
         string dropShot = "DROP TABLE [Shot]";
         using var command2 = new SqlCommand(dropShot, connection);
-        command2.ExecuteNonQuery();
+        _ = command2.ExecuteNonQuery();
 
     }
     public void CreateTables()

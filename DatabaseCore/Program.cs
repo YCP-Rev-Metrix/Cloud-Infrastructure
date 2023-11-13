@@ -7,10 +7,10 @@ internal class Program
         var userDB = new UserDB();//ResearchDB ResearchDB = new ResearchDB();
         var researchDB = new ResearchDB();
 
-        researchDB.Kill();
+        _ = researchDB.Kill();
         researchDB.CreateTables();
 
-        userDB.Kill();
+        _ = userDB.Kill();
         userDB.CreateTables();
 
 
