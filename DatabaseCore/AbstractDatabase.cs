@@ -8,7 +8,7 @@ namespace DatabaseCore;
 public abstract class AbstractDatabase
 {
     protected Server Server;
-    public Database Database;
+    public Database database;
     public string DatabaseName { get; set; }
     public string ConnectionString { get; set; }
 
@@ -17,10 +17,10 @@ public abstract class AbstractDatabase
         // Get DOCKERIZED environment variable
         string? DockerizedEnviron = Environment.GetEnvironmentVariable("DOCKERIZED");
         ConnectionString = DockerizedEnviron == null
-            ? $"Data Source=localhost;database={databaseName};Integrated Security=True;TrustServerCertificate=True;"
+            ? $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
             : DockerizedEnviron == "Dockerized"
-                ? $"Server=sql_server;database={databaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
-                : $"Data Source=localhost;database={databaseName};Integrated Security=True;TrustServerCertificate=True;";
+                ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
+                : $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;";
 
         LogWriter.LogInfo($"DB Connection: {ConnectionString}");
 
@@ -30,8 +30,13 @@ public abstract class AbstractDatabase
 
     public void Initialize()
     {
+        // serverConnection = new ServerConnection("localhost");
+        // Server = new Server(serverConnection);
         Server = new Server(new ServerConnection(new SqlConnection(ConnectionString)));
-        Database = Server.Databases[DatabaseName];
+        database = Server.Databases[DatabaseName];
+
+
+
     }
 
 }

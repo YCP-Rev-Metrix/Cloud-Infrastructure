@@ -12,5 +12,7 @@ internal class Program
 
         userDB.Kill();
         userDB.CreateTables();
+
+
     }
 }

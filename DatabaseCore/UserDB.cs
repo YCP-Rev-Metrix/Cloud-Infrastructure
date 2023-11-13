@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data;
+using Microsoft.SqlServer.Management.Common;
+using System.Xml;
 
 namespace DatabaseCore;
 
@@ -13,25 +15,43 @@ public class UserDB : AbstractDatabase
 
     public void CreateTables()
     {
-        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
 
-        // Check to see if the database is in the server
-        // If not create the database and then create the tables
+        ServerConnection serverConnection = new ServerConnection("localhost");
+        Server server = new Server(serverConnection);
+        Database database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+        
+        // Will need to look at this part!
         if (!Server.Databases.Contains(DatabaseName))
-        {
-            Database.Create();
+            {
+            database.Create();
         }
-        // Otherwise breakout of createTables
         else
         {
-            return;
+            
         }
-        
+        // Using the database this way due to some error that happens when using database above with the new object
+        // Continues to give error about not being able to create the tables when parent isn't created first
+        // Even tho the parent is created. 
+        Database temp = Server.Databases[DatabaseName];
 
         // User Table
         {
             // Create new
-            var UserTable = new Table(Database, "User");
+            var UserTable = new Table(temp, "User");
+
+            // Firstname
+            var firstname = new Column(UserTable, "firstname", DataType.VarChar(255))
+            {
+                Nullable = false
+            };
+            UserTable.Columns.Add(firstname);
+
+            // Lastname
+            var lastname = new Column(UserTable, "lastname", DataType.VarChar(255))
+            {
+                Nullable = false
+            };
+            UserTable.Columns.Add(lastname);
 
             // Username
             var username = new Column(UserTable, "username", DataType.VarChar(255))
@@ -70,6 +90,7 @@ public class UserDB : AbstractDatabase
             UserTable.Columns.Add(phone);
 
             // ID
+        
             var id = new Column(UserTable, "id", DataType.BigInt)
             {
                 IdentityIncrement = 1,
@@ -79,20 +100,26 @@ public class UserDB : AbstractDatabase
             };
             UserTable.Columns.Add(id);
 
-            UserTable.Create();
 
-            // Create the primary key constraint using SQL
-            string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
-            Database.ExecuteNonQuery(sql);
+            if (!temp.Tables.Contains("User"))
+            {
+                UserTable.Create();
 
-            sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
-            Database.ExecuteNonQuery(sql);
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
+
+                temp.ExecuteNonQuery(sql);
+
+                sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
+                temp.ExecuteNonQuery(sql);
+            }
         }
 
-        // Token Table
+        // RefreshToken Table
         {
             // Create new
-            var TokenTable = new Table(Database, "Token");
+            var TokenTable = new Table(temp, "RefreshToken");
 
             // Expiration
             var expiration = new Column(TokenTable, "expiration", DataType.DateTime)
@@ -115,28 +142,524 @@ public class UserDB : AbstractDatabase
             };
             TokenTable.Columns.Add(token);
 
-            TokenTable.Create();
 
-            // Create the foreign key after the "TokenTable" has been created
+            if (!temp.Tables.Contains("RefreshToken"))
             {
-                TokenTable = Database.Tables["Token"]; // Retrieve the existing "TokenTable"
+                TokenTable.Create();
 
-                // User ID
-                var userIdKey = new ForeignKey(TokenTable, "FK_Token_User");
-                var userIdKeyCol = new ForeignKeyColumn(userIdKey, "userid")
+                // Create the foreign key after the "RefreshTokenTable" has been created
                 {
-                    ReferencedColumn = "id"
-                };
-                userIdKey.Columns.Add(userIdKeyCol);
-                userIdKey.ReferencedTable = "User";
+                    TokenTable = temp.Tables["RefreshToken"]; // Retrieve the existing "RefreshTokenTable"
 
-                userIdKey.Create();
+                    // User ID
+                    var userIdKey = new ForeignKey(TokenTable, "FK_RefreshToken_User");
+                    var userIdKeyCol = new ForeignKeyColumn(userIdKey, "userid")
+                    {
+                        ReferencedColumn = "id"
+                    };
+                    userIdKey.Columns.Add(userIdKeyCol);
+                    userIdKey.ReferencedTable = "User";
+
+                    userIdKey.Create();
+                }
             }
         }
-        // Create Shot Table
+
+        // Event Table
+        {
+            // Create new Table
+            var EventTable = new Table(temp, "Event");
+
+            // Game id
+            var event_id = new Column(EventTable, "event_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            EventTable.Columns.Add(event_id);
+
+            // User ID
+            var userId = new Column(EventTable, "userid", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            EventTable.Columns.Add(userId);
+
+            // Event Type
+            var event_type = new Column(EventTable, "event_type", DataType.VarChar(50));
+            EventTable.Columns.Add(event_type);
+
+
+            if (!temp.Tables.Contains("Event"))
+            {
+                EventTable.Create();
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Event] ADD CONSTRAINT PK_Event PRIMARY KEY (event_id);";
+                temp.ExecuteNonQuery(sql);
+
+                // Create the foreign key after the "EventTable" has been created
+                {
+                    EventTable = temp.Tables["Event"]; // Retrieve the existing "EventTable"
+
+                    // User ID
+                    var userIdKey = new ForeignKey(EventTable, "FK_Event_User");
+                    var userIdKeyCol = new ForeignKeyColumn(userIdKey, "userid")
+                    {
+                        ReferencedColumn = "id"
+                    };
+                    userIdKey.Columns.Add(userIdKeyCol);
+                    userIdKey.ReferencedTable = "User";
+
+                    userIdKey.Create();
+                }
+            }
+
+
+        }
+
+        // League Table
+        {
+            // Create new table
+            var LeagueTable = new Table(temp, "League");
+
+            // league_id
+            var league_id = new Column(LeagueTable, "league_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            LeagueTable.Columns.Add(league_id);
+
+            // Event Id
+            var event_id = new Column(LeagueTable, "event_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            LeagueTable.Columns.Add(event_id);
+
+            if (!temp.Tables.Contains("League"))
+            {
+                LeagueTable.Create();
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [League] ADD CONSTRAINT PK_League PRIMARY KEY (league_id);";
+                temp.ExecuteNonQuery(sql);
+
+                // Create the foreign key after the "LeagueTable" has been created
+                {
+                    LeagueTable = temp.Tables["League"]; // Retrieve the existing "LeagueTable"
+
+                    // Event id                             Foriegn Key from Event
+                    var eventIdKey = new ForeignKey(LeagueTable, "FK_League_Event");
+                    var eventIdKeyCol = new ForeignKeyColumn(eventIdKey, "event_id")
+                    {
+                        ReferencedColumn = "event_id"
+                    };
+                    eventIdKey.Columns.Add(eventIdKeyCol);
+                    eventIdKey.ReferencedTable = "Event";
+
+                    eventIdKey.Create();
+                }
+            }
+        }
+
+        // Tournament Table
+        {
+            // Create new table
+            var TournamentTable = new Table(temp, "Tournament");
+
+            // tournament_id
+            var tournament_id = new Column(TournamentTable, "tournament_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            TournamentTable.Columns.Add(tournament_id);
+
+            // Event Id
+            var event_id = new Column(TournamentTable, "event_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            TournamentTable.Columns.Add(event_id);
+
+            if (!temp.Tables.Contains("Tournament"))
+            {
+                TournamentTable.Create();
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Tournament] ADD CONSTRAINT PK_Tournament PRIMARY KEY (tournament_id);";
+                temp.ExecuteNonQuery(sql);
+
+                // Create the foreign key after the "TournamentTable" has been created
+                {
+                    TournamentTable = temp.Tables["Tournament"]; // Retrieve the existing "PracticeTable"
+
+                    // Event id                             Foriegn Key from Event
+                    var eventIdKey = new ForeignKey(TournamentTable, "FK_Tournament_Event");
+                    var eventIdKeyCol = new ForeignKeyColumn(eventIdKey, "event_id")
+                    {
+                        ReferencedColumn = "event_id"
+                    };
+                    eventIdKey.Columns.Add(eventIdKeyCol);
+                    eventIdKey.ReferencedTable = "Event";
+
+                    eventIdKey.Create();
+                }
+            }
+        }
+
+        // Practice Table
+        {
+            // Create new table
+            var PracticeTable = new Table(temp, "Practice");
+
+            // practice_id
+            var practice_id = new Column(PracticeTable, "practice_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            PracticeTable.Columns.Add(practice_id);
+
+            // Event Id
+            var event_id = new Column(PracticeTable, "event_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            PracticeTable.Columns.Add(event_id);
+
+            if (!temp.Tables.Contains("Practice"))
+            {
+                PracticeTable.Create();
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Practice] ADD CONSTRAINT PK_Practice PRIMARY KEY (practice_id);";
+                temp.ExecuteNonQuery(sql);
+
+                // Create the foreign key after the "PracticeTable" has been created
+                {
+                    PracticeTable = temp.Tables["Practice"]; // Retrieve the existing "PracticeTable"
+
+                    // Event id                             Foriegn Key from Event
+                    var eventIdKey = new ForeignKey(PracticeTable, "FK_Practice_Event");
+                    var eventIdKeyCol = new ForeignKeyColumn(eventIdKey, "event_id")
+                    {
+                        ReferencedColumn = "event_id"
+                    };
+                    eventIdKey.Columns.Add(eventIdKeyCol);
+                    eventIdKey.ReferencedTable = "Event";
+
+                    eventIdKey.Create();
+                }
+            }
+        }
+
+        // Session Table
+        {
+            // Create new Table
+            var SessionTable = new Table(temp, "Session");
+
+            // Session ID
+            var session_id = new Column(SessionTable, "session_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            SessionTable.Columns.Add(session_id);
+
+            // league_id
+            var league_id = new Column(SessionTable, "league_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            SessionTable.Columns.Add(league_id);
+
+            // tournament_id
+            var tournament_id = new Column(SessionTable, "tournament_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            SessionTable.Columns.Add(tournament_id);
+
+            // practice_id
+            var practice_id = new Column(SessionTable, "practice_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            SessionTable.Columns.Add(practice_id);
+
+            // Date
+            var date = new Column(SessionTable, "date", DataType.DateTime)
+            {
+                Nullable = false
+            };
+            SessionTable.Columns.Add(date);
+
+            // Location
+            var location = new Column(SessionTable, "location", DataType.VarChar(255));
+            SessionTable.Columns.Add(location);
+
+            // Total Games
+            var total_games = new Column(SessionTable, "total_games", DataType.BigInt);
+            SessionTable.Columns.Add(total_games);
+
+            // Total Frames
+            var total_frames = new Column(SessionTable, "total_frames", DataType.BigInt);
+            SessionTable.Columns.Add(total_frames);
+
+
+            if (!temp.Tables.Contains("Session"))
+            {
+                SessionTable.Create();
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Session] ADD CONSTRAINT PK_Session PRIMARY KEY (session_id);";
+                temp.ExecuteNonQuery(sql);
+
+                // Create the foreign keys after the "SessionTable" has been created
+                {
+                    SessionTable = temp.Tables["Session"]; // Retrieve the existing "SessionTable"
+
+                    // league_id                            Foriegn Key from League
+                    var leagueIdKey = new ForeignKey(SessionTable, "FK_Session_League");
+                    var leagueIdKeyCol = new ForeignKeyColumn(leagueIdKey, "league_id")
+                    {
+                        ReferencedColumn = "league_id"
+                    };
+                    leagueIdKey.Columns.Add(leagueIdKeyCol);
+                    leagueIdKey.ReferencedTable = "League";
+
+                    leagueIdKey.Create();
+                    //////////
+                    ///
+                    // tournament_id                            Foriegn Key from Tournament
+                    var tournamentIdKey = new ForeignKey(SessionTable, "FK_Session_Tournament");
+                    var tournamentIdKeyCol = new ForeignKeyColumn(tournamentIdKey, "tournament_id")
+                    {
+                        ReferencedColumn = "tournament_id"
+                    };
+                    tournamentIdKey.Columns.Add(tournamentIdKeyCol);
+                    tournamentIdKey.ReferencedTable = "Tournament";
+
+                    tournamentIdKey.Create();
+                    //////////
+                    ///
+                    // Practice_id                            Foriegn Key from Practice
+                    var practiceIdKey = new ForeignKey(SessionTable, "FK_Session_Practice");
+                    var practiceIdKeyCol = new ForeignKeyColumn(practiceIdKey, "practice_id")
+                    {
+                        ReferencedColumn = "practice_id"
+                    };
+                    practiceIdKey.Columns.Add(practiceIdKeyCol);
+                    practiceIdKey.ReferencedTable = "Practice";
+
+                    practiceIdKey.Create();
+
+
+                }
+
+            }
+
+
+        }
+
+        // Game Table
+        {
+            // Create new Table
+            var GameTable = new Table(temp, "Game");
+
+            // Game id
+            var game_id = new Column(GameTable, "game_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            GameTable.Columns.Add(game_id);
+
+            // session_id
+            var session_id = new Column(GameTable, "session_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            GameTable.Columns.Add(session_id);
+
+            var score = new Column(GameTable, "score", DataType.VarChar(255));
+            GameTable.Columns.Add(score);
+
+
+            if (!temp.Tables.Contains("Game"))
+            {
+                GameTable.Create();
+
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Game] ADD CONSTRAINT PK_Game PRIMARY KEY (game_id);";
+                temp.ExecuteNonQuery(sql);
+
+
+                // Create the foreign key after the "GameTable" has been created
+                {
+                    GameTable = temp.Tables["Game"]; // Retrieve the existing "GameTable"
+
+                    // Event id                             Foriegn Key from Session
+                    var sessionIdKey = new ForeignKey(GameTable, "FK_Game_Session");
+                    var sessionIdKeyCol = new ForeignKeyColumn(sessionIdKey, "session_id")
+                    {
+                        ReferencedColumn = "session_id"
+                    };
+                    sessionIdKey.Columns.Add(sessionIdKeyCol);
+                    sessionIdKey.ReferencedTable = "Session";
+
+                    sessionIdKey.Create();
+                }
+
+            }
+        }
+
+        // Frame Table
         {
             // Create new
-            var ShotTable = new Table(Database, "Shot");
+            var FrameTable = new Table(temp, "Frame");
+
+            // Frame_id
+            var frame_id = new Column(FrameTable, "frame_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            FrameTable.Columns.Add(frame_id);
+
+            // User ID
+            var game_id = new Column(FrameTable, "game_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            FrameTable.Columns.Add(game_id);
+
+            var score = new Column(FrameTable, "score", DataType.VarChar(255));
+            FrameTable.Columns.Add(score);
+
+
+            if (!temp.Tables.Contains("Frame"))
+            {
+                FrameTable.Create();
+            }
+
+            // Create the primary key constraint using SQL
+            string sql = "ALTER TABLE [Frame] ADD CONSTRAINT PK_Frame PRIMARY KEY (frame_id);";
+            temp.ExecuteNonQuery(sql);
+
+            // Create the foreign key after the "FrameTable" has been created
+            {
+                FrameTable = temp.Tables["Frame"]; // Retrieve the existing "FrameTable"
+
+                // Game id                             Foriegn Key from Game
+                var gameIdKey = new ForeignKey(FrameTable, "FK_Frame_Game");
+                var gameIdKeyCol = new ForeignKeyColumn(gameIdKey, "game_id")
+                {
+                    ReferencedColumn = "game_id"
+                };
+                gameIdKey.Columns.Add(gameIdKeyCol);
+                gameIdKey.ReferencedTable = "Game";
+
+                gameIdKey.Create();
+            }
+
+
+        }
+
+        // Video Table
+        {
+            // Create new table
+            var VideoTable = new Table(temp, "Video");
+
+            // practice_id
+            var video_id = new Column(VideoTable, "video_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            VideoTable.Columns.Add(video_id);
+
+            // Event Id
+            var video = new Column(VideoTable, "video", DataType.VarBinaryMax)
+            {
+                Nullable = false
+            };
+            VideoTable.Columns.Add(video);
+
+            if (!temp.Tables.Contains("Video"))
+            {
+                VideoTable.Create();
+
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Video] ADD CONSTRAINT PK_Video PRIMARY KEY (video_id);";
+
+                temp.ExecuteNonQuery(sql);
+            }
+        }
+
+        // Ball Table
+        {
+            // Create new table
+            var BallTable = new Table(temp, "Ball");
+
+            // ball_id
+            var ball_id = new Column(BallTable, "ball_id", DataType.BigInt)
+            {
+                IdentityIncrement = 1,
+                Nullable = false,
+                IdentitySeed = 1,
+                Identity = true
+            };
+            BallTable.Columns.Add(ball_id);
+
+            // weight
+            var weight = new Column(BallTable, "weight", DataType.Float)
+            {
+                Nullable = false
+            };
+            BallTable.Columns.Add(weight);
+
+            // color
+            var color = new Column(BallTable, "color", DataType.VarChar(50));
+            BallTable.Columns.Add(color);
+
+            if (!temp.Tables.Contains("Ball"))
+            {
+                BallTable.Create();
+
+
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Ball] ADD CONSTRAINT PK_Ball PRIMARY KEY (ball_id);";
+
+                temp.ExecuteNonQuery(sql);
+            }
+        }
+
+        // Shot Table
+        {
+            // Create new
+            var ShotTable = new Table(temp, "Shot");
 
             // Shot_id Primary Key 
             // Primary Key is added after the table is created. 
@@ -188,42 +711,184 @@ public class UserDB : AbstractDatabase
             };
             ShotTable.Columns.Add(time);
 
+            // Lane Number  
+            var lane_Number = new Column(ShotTable, "lane_Number", DataType.Binary(2))
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(lane_Number);
+
+            // These will need to be updated somehow to be lists
+            var ddx = new Column(ShotTable, "ddx", DataType.Float);
+            ShotTable.Columns.Add(ddx);
+
+            // These will need to be updated somehow to be lists
+            var ddy = new Column(ShotTable, "ddy", DataType.Float);
+            ShotTable.Columns.Add(ddy);
+
+            // These will need to be updated somehow to be lists
+            var ddz = new Column(ShotTable, "ddz", DataType.Float);
+            ShotTable.Columns.Add(ddz);
+
+            // These will need to be updated somehow to be lists
+            var x_position = new Column(ShotTable, "x_position", DataType.Float);
+            ShotTable.Columns.Add(x_position);
+
+            // These will need to be updated somehow to be lists
+            var y_position = new Column(ShotTable, "y_position", DataType.Float);
+            ShotTable.Columns.Add(y_position);
+
+            // These will need to be updated somehow to be lists
+            var z_position = new Column(ShotTable, "z_position", DataType.Float);
+            ShotTable.Columns.Add(z_position);
+
             // Create the entire table for shot
-            ShotTable.Create();
+            if (!temp.Tables.Contains("Shot"))
+            {
+                ShotTable.Create();
 
-            // Create the primary key constraint using SQL
-            string sql = "ALTER TABLE [Shot] ADD CONSTRAINT PK_shot_id PRIMARY KEY (shot_id);";
-            Database.ExecuteNonQuery(sql);
+                // Create the primary key constraint using SQL
+                string sql = "ALTER TABLE [Shot] ADD CONSTRAINT PK_shot_id PRIMARY KEY (shot_id);";
+                temp.ExecuteNonQuery(sql);
+                // May need to add in the foreign keys?
 
-            //sql = "ALTER TABLE [User] ADD CONSTRAINT UNQ__User__username UNIQUE ([username])";
-            // Database.ExecuteNonQuery(sql);
+                // Create the foreign key after the "ShotTable" has been created
+                {
+                    ShotTable = temp.Tables["Shot"]; // Retrieve the existing "ShotTable"
+
+                    // Frame id                             Foriegn Key from Frame
+                    var frameIdKey = new ForeignKey(ShotTable, "FK_Shot_Frame");
+                    var frameIdKeyCol = new ForeignKeyColumn(frameIdKey, "frame_id")
+                    {
+                        ReferencedColumn = "frame_id"
+                    };
+                    frameIdKey.Columns.Add(frameIdKeyCol);
+                    frameIdKey.ReferencedTable = "Frame";
+                    frameIdKey.Create();
+
+                    // Ball id                             Foriegn Key from Ball
+                    var ballIdKey = new ForeignKey(ShotTable, "FK_Shot_Ball");
+                    var ballIdKeyCol = new ForeignKeyColumn(ballIdKey, "ball_id")
+                    {
+                        ReferencedColumn = "ball_id"
+                    };
+                    ballIdKey.Columns.Add(ballIdKeyCol);
+                    ballIdKey.ReferencedTable = "Ball";
+                    ballIdKey.Create();
+
+                    // Video id                             Foriegn Key from Video
+                    var videoIdKey = new ForeignKey(ShotTable, "FK_Shot_Video");
+                    var videoIdKeyCol = new ForeignKeyColumn(videoIdKey, "video_id")
+                    {
+                        ReferencedColumn = "video_id"
+                    };
+                    videoIdKey.Columns.Add(videoIdKeyCol);
+                    videoIdKey.ReferencedTable = "Video";
+                    videoIdKey.Create();
+
+                }
+
+            }
+
         }
+
+
     }
 
     public async Task Kill() {
 
             using var connection = new SqlConnection(ConnectionString);
             await connection.OpenAsync();
-            string noConstraint = "Use [revmetrix-u] ALTER TABLE [User] NOCHECK CONSTRAINT all";
-            using var command = new SqlCommand(noConstraint, connection);
-            command.ExecuteNonQuery();
 
+            // This will need to be adjusted to see if constraints are being reset in order.
+            // As well as the order of Dropping the table 
 
-            //using var connection2 = new SqlConnection(ConnectionString);
-            //connection2.OpenAsync();
-            string dropUser = "DROP TABLE [User]";
-            using var command2 = new SqlCommand(dropUser, connection);
+            // Get Rid of The Key Constraints for Shot
+            string noConstraint = "Use [revmetrix-u] ALTER TABLE [Shot] NOCHECK CONSTRAINT all";
+            using var command1 = new SqlCommand(noConstraint, connection);
+            command1.ExecuteNonQuery();
+
+            // Dropping the Shot Table
+            string dropShot = "DROP TABLE [Shot]";
+            using var command2 = new SqlCommand(dropShot, connection);
             command2.ExecuteNonQuery();
 
-            //using var connection3 = new SqlConnection(ConnectionString);
-            //connection3.OpenAsync();
-            string dropShot = "DROP TABLE [Shot]";
-            using var command3 = new SqlCommand(dropShot, connection);
+            // Dropping the Video Table
+            string dropVideo = "DROP TABLE [Video]";
+            using var command3 = new SqlCommand(dropVideo, connection);
             command3.ExecuteNonQuery();
 
-        }
+            // Dropping the Ball Table
+            string dropBall = "DROP TABLE [Ball]";
+            using var command4 = new SqlCommand(dropBall, connection);
+            command4.ExecuteNonQuery();
 
-        public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
+            // Dropping the Frame Table
+            string dropFrame = "DROP TABLE [Frame]";
+            using var command5 = new SqlCommand(dropFrame, connection);
+            command5.ExecuteNonQuery();
+
+            // Dropping the Game Table
+            string dropGame = "DROP TABLE [Game]";
+            using var command6 = new SqlCommand(dropGame, connection);
+            command6.ExecuteNonQuery();
+
+            // Dropping the Session Table
+            string dropSession = "DROP TABLE [Session]";
+            using var command7 = new SqlCommand(dropSession, connection);
+            command7.ExecuteNonQuery();
+
+            // Dropping the League Table
+            string dropLeague = "DROP TABLE [League]";
+            using var command8 = new SqlCommand(dropLeague, connection);
+            command8.ExecuteNonQuery();
+
+            // Dropping the Tournament Table
+            string dropTournament = "DROP TABLE [Tournament]";
+            using var command9 = new SqlCommand(dropTournament, connection);
+            command9.ExecuteNonQuery();
+
+            // Dropping the Practice Table
+            string dropPractice = "DROP TABLE [Practice]";
+            using var command10 = new SqlCommand(dropPractice, connection);
+            command10.ExecuteNonQuery();
+
+            // Dropping the Event Table 
+            string dropEvent = "DROP TABLE [Event]";
+            using var command11 = new SqlCommand(dropEvent, connection);
+            command11.ExecuteNonQuery();
+
+            // Dropping the RefreshToken Table
+            string dropRefreshToken = "DROP TABLE [RefreshToken]";
+            using var command12 = new SqlCommand(dropRefreshToken, connection);
+            command12.ExecuteNonQuery();
+
+            // Droping the User Table
+            string dropUser = "DROP TABLE [User]";
+            using var command13 = new SqlCommand(dropUser, connection);
+            command13.ExecuteNonQuery();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    public async Task<bool> AddUser(string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
@@ -387,7 +1052,7 @@ public class UserDB : AbstractDatabase
 
     public bool DoesExist()
     {
-        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+        database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         if (!Server.Databases.Contains(DatabaseName))
         {
             return true;
