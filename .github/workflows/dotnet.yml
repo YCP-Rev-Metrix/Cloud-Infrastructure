@@ -105,7 +105,7 @@ jobs:
           name: pack-artifacts
           path: C:/clientpackage
       - name: Publish NuGet Package
-        run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.NUGET_CLIENT_API_KEY }} -s https://nuget.pkg.github.com/YCP-Rev-Metrix/index.json --no-symbols
+        run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.PACKAGES_PERSONAL_TOKEN }} -s https://nuget.pkg.github.com/YCP-Rev-Metrix/index.json --no-symbols
 
 
   generate-swagger:
