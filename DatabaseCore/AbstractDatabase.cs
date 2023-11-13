@@ -17,7 +17,8 @@ public abstract class AbstractDatabase
         // Get DOCKERIZED environment variable
         string? DockerizedEnviron = Environment.GetEnvironmentVariable("DOCKERIZED");
         ConnectionString = DockerizedEnviron == null
-            ? $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
+            ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
+              //$"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
             : DockerizedEnviron == "Dockerized"
                 ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
                 : $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;";

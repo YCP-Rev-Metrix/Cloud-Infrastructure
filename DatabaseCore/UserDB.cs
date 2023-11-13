@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.Smo;
 using System.Data;
 using Microsoft.SqlServer.Management.Common;
 using System.Xml;
+using System.Runtime.CompilerServices;
+using System.Numerics;
 
 namespace DatabaseCore;
 
@@ -16,8 +18,8 @@ public class UserDB : AbstractDatabase
     public void CreateTables()
     {
 
-        ServerConnection serverConnection = new ServerConnection("localhost");
-        Server server = new Server(serverConnection);
+        //ServerConnection serverConnection = new ServerConnection("localhost");
+        // Server server = new Server(serverConnection);
         Database database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         
         // Will need to look at this part!
@@ -673,6 +675,14 @@ public class UserDB : AbstractDatabase
 
             ShotTable.Columns.Add(shot_id);
 
+            // User_id which is a Foreign Key
+            // Foreign Key is added after the table is created.
+            var user_id = new Column(ShotTable, "user_id", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            ShotTable.Columns.Add(user_id);
+
             // Frame_id which is a Foreign Key
             // Foreign Key is added after the table is created.
             var frame_id = new Column(ShotTable, "frame_id", DataType.BigInt)
@@ -755,6 +765,16 @@ public class UserDB : AbstractDatabase
                 // Create the foreign key after the "ShotTable" has been created
                 {
                     ShotTable = temp.Tables["Shot"]; // Retrieve the existing "ShotTable"
+
+                    // User id                             Foriegn Key from Frame
+                    var userIdKey = new ForeignKey(ShotTable, "FK_Shot_User");
+                    var userIdKeyCol = new ForeignKeyColumn(userIdKey, "user_id")
+                    {
+                        ReferencedColumn = "user_id"
+                    };
+                    userIdKey.Columns.Add(userIdKeyCol);
+                    userIdKey.ReferencedTable = "User";
+                    userIdKey.Create();
 
                     // Frame id                             Foriegn Key from Frame
                     var frameIdKey = new ForeignKey(ShotTable, "FK_Shot_Frame");
@@ -1044,6 +1064,47 @@ public class UserDB : AbstractDatabase
         using var command = new SqlCommand(deleteQuery, connection);
         // Set the parameter values
         command.Parameters.Add("@Username", SqlDbType.VarChar).Value = username;
+
+        // Execute the query
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+    }
+
+    public async Task<bool> InsertShot(BigInteger user_id,
+                                       BigInteger frame_id,
+                                       BigInteger ball_id,
+                                       BigInteger video_id,
+                                       BinaryData pins_remaining,
+                                       DateTime time,
+                                       BinaryData lane_number,
+                                       float ddx,
+                                       float ddy,
+                                       float ddz,
+                                       float x_position,
+                                       float y_position,
+                                       float z_position  )
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, x_position, y_position) " +
+                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, Z_position)";
+        using var command = new SqlCommand(insertQuery, connection);
+
+        // Set the parameter values
+        command.Parameters.Add("@User_id", SqlDbType.BigInt).Value = user_id;
+        command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = frame_id;
+        command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = ball_id;
+        command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = video_id;
+        command.Parameters.Add("@Pins_remaining", SqlDbType.VarBinary, 2).Value = pins_remaining;
+        command.Parameters.Add("@Time",SqlDbType.DateTime, 2).Value = time;
+        command.Parameters.Add("@Lane_number", SqlDbType.VarBinary, 2).Value = lane_number;
+        command.Parameters.Add("Ddx", SqlDbType.Float).Value = ddx;
+        command.Parameters.Add("Ddy", SqlDbType.Float).Value = ddy;
+        command.Parameters.Add("Ddz", SqlDbType.Float).Value = ddz;
+        command.Parameters.Add("X_position", SqlDbType.Float).Value = x_position;
+        command.Parameters.Add("Y_position", SqlDbType.Float).Value = y_position;
+        command.Parameters.Add("Z_position", SqlDbType.Float).Value = z_position;
 
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();

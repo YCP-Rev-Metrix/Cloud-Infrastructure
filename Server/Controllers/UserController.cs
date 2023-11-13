@@ -95,4 +95,28 @@ public class UserController : AbstractFeaturedController
     [HttpPost("Unregister", Name = "Unregister")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Unregister([FromBody] UserIdentification userIdentification) => throw new NotImplementedException();
+
+
+    [HttpPost("InsertShot", Name = "InsertShot")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+
+
+    public async Task<IActionResult> InsertShot([FromBody] Shot shot)
+    {
+        return Ok( await ServerState.UserDatabase.InsertShot(shot.User_id,
+                                                      shot.Frame_id,
+                                                      shot.Ball_id, 
+                                                      shot.Video_id,
+                                                      shot.Pins_remaining,
+                                                      shot.Time,
+                                                      shot.Lane_Number,
+                                                      shot.Ddx,
+                                                      shot.Ddy,
+                                                      shot.Ddz,
+                                                      shot.Dx,
+                                                      shot.Dy,
+                                                      shot.Dz
+                                                      ));
+    }
+
 }
