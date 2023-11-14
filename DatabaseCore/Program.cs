@@ -1,4 +1,9 @@
-﻿namespace DatabaseCore;
+﻿using Common.Logging;
+using Common.POCOs;
+using Microsoft.SqlServer.Management.Smo;
+
+
+namespace DatabaseCore;
 
 internal class Program
 {
@@ -12,7 +17,6 @@ internal class Program
 
         _ = userDB.Kill();
         userDB.CreateTables();
-
 
     }
 }
