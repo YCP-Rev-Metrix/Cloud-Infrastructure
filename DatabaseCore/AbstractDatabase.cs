@@ -27,6 +27,8 @@ public abstract class AbstractDatabase
 
         DatabaseName = databaseName;
         Initialize();
+
+
     }
 
     public void Initialize()

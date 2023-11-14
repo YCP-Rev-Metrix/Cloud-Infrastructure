@@ -5,6 +5,9 @@ using Microsoft.SqlServer.Management.Common;
 using System.Xml;
 using System.Runtime.CompilerServices;
 using System.Numerics;
+using Common.Logging;
+using Common.POCOs;
+using System;
 
 namespace DatabaseCore;
 
@@ -770,7 +773,7 @@ public class UserDB : AbstractDatabase
                     var userIdKey = new ForeignKey(ShotTable, "FK_Shot_User");
                     var userIdKeyCol = new ForeignKeyColumn(userIdKey, "user_id")
                     {
-                        ReferencedColumn = "user_id"
+                        ReferencedColumn = "id"
                     };
                     userIdKey.Columns.Add(userIdKeyCol);
                     userIdKey.ReferencedTable = "User";
@@ -911,13 +914,19 @@ public class UserDB : AbstractDatabase
 
     public async Task<bool> AddUser(string firstname, string lastname, string username, byte[] hashedPassword, byte[] salt, string roles, string phone, string email)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        await connection.OpenAsync();
+        // If not local use this connection
+        ConnectionString = "Server=143.110.146.58,1433;Database=revmetrix-u;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        // If local using this connection string
+        //ConnectionString = "Data Source=localhost;Database=revmetrix-u;Integrated Security=True;TrustServerCertificate=True;";
+        using var connection1 = new SqlConnection(ConnectionString);
+        await connection1.OpenAsync();
+        LogWriter.LogInfo(connection1);
+        // ConnectionString = "Server = 143.110.146.58,1433; User Id = SA; Password = BigPass@Word!; TrustServerCertificate = True;";
 
         string insertQuery = "INSERT INTO [User] (firstname, lastname, username, salt, roles, password, email, phone) " +
                              "VALUES (@Firstname, @Lastname, @Username, @Salt, @Roles, @Password, @Email, @Phone)";
 
-        using var command = new SqlCommand(insertQuery, connection);
+        using var command = new SqlCommand(insertQuery, connection1);
         // Set the parameter values
         command.Parameters.Add("@Firstname", SqlDbType.VarChar).Value = firstname;
         command.Parameters.Add("@Lastname", SqlDbType.VarChar).Value = lastname;
@@ -927,6 +936,7 @@ public class UserDB : AbstractDatabase
         command.Parameters.Add("@Password", SqlDbType.VarBinary, -1).Value = hashedPassword;
         command.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
         command.Parameters.Add("@Phone", SqlDbType.VarChar).Value = phone;
+
 
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();
@@ -1005,7 +1015,7 @@ public class UserDB : AbstractDatabase
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [Token] (token, userid, expiration) " +
+        string insertQuery = "INSERT INTO [RefreshToken] (token, userid, expiration) " +
             "VALUES (@Token, (SELECT id FROM [User] WHERE username = @Username), @Expiration);";
 
         using var command = new SqlCommand(insertQuery, connection);
