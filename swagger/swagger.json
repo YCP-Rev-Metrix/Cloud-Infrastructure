@@ -548,10 +548,90 @@
           }
         }
       }
+    },
+    "/api/User/InsertShot": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "InsertShot",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shot"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shot"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shot"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "BigInteger": {
+        "type": "object",
+        "properties": {
+          "isPowerOfTwo": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "isZero": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "isOne": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "isEven": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "sign": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BinaryData": {
+        "type": "object",
+        "additionalProperties": false
+      },
       "ByteArrayToken": {
         "type": "object",
         "properties": {
@@ -641,14 +721,82 @@
         },
         "additionalProperties": { }
       },
+      "Shot": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "$ref": "#/components/schemas/BigInteger"
+          },
+          "frame_id": {
+            "$ref": "#/components/schemas/BigInteger"
+          },
+          "ball_id": {
+            "$ref": "#/components/schemas/BigInteger"
+          },
+          "video_id": {
+            "$ref": "#/components/schemas/BigInteger"
+          },
+          "pins_remaining": {
+            "$ref": "#/components/schemas/BinaryData"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lane_Number": {
+            "$ref": "#/components/schemas/BinaryData"
+          },
+          "ddx": {
+            "type": "number",
+            "format": "float"
+          },
+          "ddy": {
+            "type": "number",
+            "format": "float"
+          },
+          "ddz": {
+            "type": "number",
+            "format": "float"
+          },
+          "dx": {
+            "type": "number",
+            "format": "float"
+          },
+          "dy": {
+            "type": "number",
+            "format": "float"
+          },
+          "dz": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
       "UserIdentification": {
         "type": "object",
         "properties": {
+          "firstname": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastname": {
+            "type": "string",
+            "nullable": true
+          },
           "username": {
             "type": "string",
             "nullable": true
           },
           "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone_number": {
             "type": "string",
             "nullable": true
           }
