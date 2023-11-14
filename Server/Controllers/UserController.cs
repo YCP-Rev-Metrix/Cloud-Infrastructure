@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using Common.POCOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers;
@@ -105,24 +106,71 @@ public class UserController : AbstractFeaturedController
 
     [HttpPost("InsertShot", Name = "InsertShot")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-
-
     public async Task<IActionResult> InsertShot([FromBody] Shot shot)
     {
-        return Ok( await ServerState.UserDatabase.InsertShot(shot.User_id,
+        return Ok( await ServerState.UserStore.InsertShot(shot.User_id,
                                                       shot.Frame_id,
                                                       shot.Ball_id, 
                                                       shot.Video_id,
-                                                      shot.Pins_remaining,
+                                                      //shot.Pins_remaining,
                                                       shot.Time,
-                                                      shot.Lane_Number,
+                                                      //shot.Lane_Number,
                                                       shot.Ddx,
                                                       shot.Ddy,
                                                       shot.Ddz,
-                                                      shot.Dx,
-                                                      shot.Dy,
-                                                      shot.Dz
+                                                      shot.X_position,
+                                                      shot.Y_position,
+                                                      shot.Z_position
                                                       ));
+    }
+
+
+    [HttpPost("InsertBall", Name = "InsertBall")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> InsertBall([FromBody] Ball ball)
+    {
+        return Ok( await ServerState.UserStore.InsertBall(ball.Weight, ball.Color));
+    }
+
+    [HttpPost("StartSession", Name = "StartSession")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartSession([FromBody] Session session)
+    {
+        return Ok(await ServerState.UserStore.StartSession(session.Leauge_id,
+                                                           session.Tournament_id,
+                                                           session.Practice_id,
+                                                           session.Time,
+                                                           session.Location,
+                                                           session.Total_Games,
+                                                           session.Total_Frames));
+    }
+
+    [HttpPost("StartPractice", Name = "StartPractice")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartPractice([FromBody] Practice practice)
+    {
+        return Ok(await ServerState.UserStore.StartPractice(practice.Event_id));
+    }
+
+    [HttpPost("StartEvent", Name = "StartEvent")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartEvent([FromBody] Event events )
+    {
+        return Ok(await ServerState.UserStore.StartEvent(events.User_id, events.Event_type));
+    }
+
+    [HttpPost("StartGame", Name = "StartGame")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartGame([FromBody] Game game)
+    {
+        return Ok(await ServerState.UserStore.StartGame(game.Session_id, game.Score));
+    }
+
+    [HttpPost("StartFrame", Name = "StartFrame")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartFrame([FromBody] Frame frame)
+    {
+        return Ok(await ServerState.UserStore.StartFrame(frame.Game_id, frame.Score));
     }
 
 }

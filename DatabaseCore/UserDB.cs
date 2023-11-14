@@ -387,21 +387,21 @@ public class UserDB : AbstractDatabase
             // league_id
             var league_id = new Column(SessionTable, "league_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             SessionTable.Columns.Add(league_id);
 
             // tournament_id
             var tournament_id = new Column(SessionTable, "tournament_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             SessionTable.Columns.Add(tournament_id);
 
             // practice_id
             var practice_id = new Column(SessionTable, "practice_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             SessionTable.Columns.Add(practice_id);
 
@@ -690,7 +690,7 @@ public class UserDB : AbstractDatabase
             // Foreign Key is added after the table is created.
             var frame_id = new Column(ShotTable, "frame_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             ShotTable.Columns.Add(frame_id);
 
@@ -698,7 +698,7 @@ public class UserDB : AbstractDatabase
             // Foreign Key is added after the table is created.
             var ball_id = new Column(ShotTable, "ball_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             ShotTable.Columns.Add(ball_id);
 
@@ -706,7 +706,7 @@ public class UserDB : AbstractDatabase
             // Foreign Key is added after the table is created.
             var video_id = new Column(ShotTable, "video_id", DataType.BigInt)
             {
-                Nullable = false
+                Nullable = true
             };
             ShotTable.Columns.Add(video_id);
 
@@ -779,6 +779,8 @@ public class UserDB : AbstractDatabase
                     userIdKey.ReferencedTable = "User";
                     userIdKey.Create();
 
+                    // for testing purposes commenting out all the other keys
+                    
                     // Frame id                             Foriegn Key from Frame
                     var frameIdKey = new ForeignKey(ShotTable, "FK_Shot_Frame");
                     var frameIdKeyCol = new ForeignKeyColumn(frameIdKey, "frame_id")
@@ -788,7 +790,7 @@ public class UserDB : AbstractDatabase
                     frameIdKey.Columns.Add(frameIdKeyCol);
                     frameIdKey.ReferencedTable = "Frame";
                     frameIdKey.Create();
-
+                    
                     // Ball id                             Foriegn Key from Ball
                     var ballIdKey = new ForeignKey(ShotTable, "FK_Shot_Ball");
                     var ballIdKeyCol = new ForeignKeyColumn(ballIdKey, "ball_id")
@@ -808,7 +810,7 @@ public class UserDB : AbstractDatabase
                     videoIdKey.Columns.Add(videoIdKeyCol);
                     videoIdKey.ReferencedTable = "Video";
                     videoIdKey.Create();
-
+                    
                 }
 
             }
@@ -1082,13 +1084,13 @@ public class UserDB : AbstractDatabase
         return i != -1;
     }
 
-    public async Task<bool> InsertShot(BigInteger user_id,
-                                       BigInteger frame_id,
-                                       BigInteger ball_id,
-                                       BigInteger video_id,
-                                       BinaryData pins_remaining,
+    public async Task<bool> InsertShot(int user_id,
+                                       int? frame_id,
+                                       int? ball_id,
+                                       int? video_id,
+                                       byte[] pins_remaining,
                                        DateTime time,
-                                       BinaryData lane_number,
+                                       byte[] lane_number,
                                        float ddx,
                                        float ddy,
                                        float ddz,
@@ -1096,33 +1098,217 @@ public class UserDB : AbstractDatabase
                                        float y_position,
                                        float z_position  )
     {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        //ConnectionString = "Data Source=localhost;Database=revmetrix-u;Integrated Security=True;TrustServerCertificate=True;";
+
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, x_position, y_position) " +
-                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, Z_position)";
+        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position) " +
+                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, @Z_position)";
         using var command = new SqlCommand(insertQuery, connection);
 
         // Set the parameter values
         command.Parameters.Add("@User_id", SqlDbType.BigInt).Value = user_id;
-        command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = frame_id;
-        command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = ball_id;
-        command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = video_id;
-        command.Parameters.Add("@Pins_remaining", SqlDbType.VarBinary, 2).Value = pins_remaining;
-        command.Parameters.Add("@Time",SqlDbType.DateTime, 2).Value = time;
-        command.Parameters.Add("@Lane_number", SqlDbType.VarBinary, 2).Value = lane_number;
-        command.Parameters.Add("Ddx", SqlDbType.Float).Value = ddx;
-        command.Parameters.Add("Ddy", SqlDbType.Float).Value = ddy;
-        command.Parameters.Add("Ddz", SqlDbType.Float).Value = ddz;
-        command.Parameters.Add("X_position", SqlDbType.Float).Value = x_position;
-        command.Parameters.Add("Y_position", SqlDbType.Float).Value = y_position;
-        command.Parameters.Add("Z_position", SqlDbType.Float).Value = z_position;
+
+        // If frame_id is null
+        if (frame_id>-1)
+        {
+            command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = frame_id;
+        }
+        else
+        {
+            command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+        // If ball_id is null
+        if (ball_id > -1)
+        {
+            command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = ball_id;
+        }
+        else
+        {
+            command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+        // If video_id is null
+        if (video_id > -1)
+        {
+            command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = video_id;
+        }
+        else
+        {
+            command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+            command.Parameters.Add("@Pins_remaining", SqlDbType.VarBinary, 8).Value = pins_remaining;
+            command.Parameters.Add("@Time",SqlDbType.DateTime, 2).Value = time;
+            command.Parameters.Add("@Lane_number", SqlDbType.VarBinary, 8).Value = lane_number;
+            command.Parameters.Add("@Ddx", SqlDbType.Float).Value = ddx;
+            command.Parameters.Add("@Ddy", SqlDbType.Float).Value = ddy;
+            command.Parameters.Add("@Ddz", SqlDbType.Float).Value = ddz;
+            command.Parameters.Add("@X_position", SqlDbType.Float).Value = x_position;
+            command.Parameters.Add("@Y_position", SqlDbType.Float).Value = y_position;
+            command.Parameters.Add("@Z_position", SqlDbType.Float).Value = z_position;
 
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();
         return i != -1;
+
     }
 
+    public async Task<bool> Insertball(float weight, string? color)
+    {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        
+        using var connection = new SqlConnection(ConnectionString) ;
+        await connection.OpenAsync();
+        string insertQuery = "INSERT INTO [Ball] (weight , color) " +
+                                "VALUES (@Weight, @Color)";
+        using var command = new SqlCommand(insertQuery, connection);
+
+        command.Parameters.Add("@Weight", SqlDbType.Float).Value = weight;
+        // Using ball to test the null 
+        if (color != null)
+        {
+            command.Parameters.Add("@Color", SqlDbType.VarChar).Value = color;
+        }
+        else
+        {
+            command.Parameters.Add("@Color", SqlDbType.VarChar).Value = DBNull.Value;
+        }
+
+        
+        //command.Parameters.Add("@Color", SqlDbType.VarChar).Value = color;
+   
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+
+    }
+
+    // This may work, still need to create one of the fk
+    public async Task<bool> Startsession(int? leauge_id, int? tournament_id, int? practice_id, DateTime date, string location, int totalgames, int totalframes)
+    {
+        // If all 3 are null then session can't start
+        if(leauge_id > -1 && tournament_id > -1 &&  practice_id > -1)
+        {
+            return false;
+        }
+
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        using var connection = new SqlConnection(ConnectionString) ;
+        await connection.OpenAsync();
+
+        string startsessionQuery = "INSERT INTO [Session] (league_id, tournament_id, practice_id, date, location, total_games, total_frames)" +
+                                    "VALUES (@League_id, @Tournament_id, @Practice_id, @Date, @Location, @Total_games, @Total_frames)";
+        using var command = new SqlCommand(startsessionQuery, connection);
+
+        // If leauge_id is null
+        if (leauge_id > -1)
+        {
+            command.Parameters.Add("@League_id", SqlDbType.BigInt).Value = leauge_id;
+        }
+        else
+        {
+            command.Parameters.Add("@League_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+        // If tournament_id is null
+        if (tournament_id > -1)
+        {
+            command.Parameters.Add("@Tournament_id", SqlDbType.BigInt).Value = tournament_id;
+        }
+        else
+        {
+            command.Parameters.Add("@Tournament_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+        // If practice_id is null
+        if (practice_id > -1)
+        {
+            command.Parameters.Add("@Practice_id", SqlDbType.BigInt).Value = practice_id;
+        }
+        else
+        {
+            command.Parameters.Add("@Practice_id", SqlDbType.BigInt).Value = DBNull.Value;
+        }
+
+            command.Parameters.Add("@Date", SqlDbType.DateTime, 2).Value = date;
+            command.Parameters.Add("@Location", SqlDbType.VarChar, 255).Value = location;
+            command.Parameters.Add("@Total_games", SqlDbType.BigInt).Value = totalgames;
+            command.Parameters.Add("@Total_frames", SqlDbType.BigInt).Value = totalframes;
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+    }
+
+    public async Task<bool> Startpractice(int event_id)
+    {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+        string insertQuery = "INSERT INTO [Practice] (event_id) " +
+                                "VALUES (@Event_id)";
+        using var command = new SqlCommand(insertQuery, connection);
+
+        command.Parameters.Add("@Event_id", SqlDbType.BigInt).Value = event_id;
+
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+
+    }
+
+    public async Task<bool> Startevent(int user_id, string event_type)
+    {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string insertQuery = "INSERT INTO [Event] (userid , event_type) " +
+                                "VALUES (@User_id, @Event_type)";
+        using var command = new SqlCommand(insertQuery, connection);
+
+        command.Parameters.Add("@User_id", SqlDbType.BigInt).Value = user_id;
+        command.Parameters.Add("@Event_type", SqlDbType.VarChar).Value = event_type;
+
+
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+
+    }
+
+    public async Task<bool> Startgame(int session_id, int score)
+    {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+        string insertQuery = "INSERT INTO [Game] (session_id, score)" +
+                              " VALUES (@Session_id, @Score)";
+
+
+        using var command = new SqlCommand(insertQuery, connection);
+        command.Parameters.Add("@Session_id", SqlDbType.BigInt).Value = session_id;
+        command.Parameters.Add("@Score", SqlDbType.BigInt).Value = score;
+
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+    }
+
+    public async Task<bool> Startframe(int game_id, int score)
+    {
+        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string InsertQuery = "INSERT INTO [Frame] (game_id, score)" +
+                                "VALUES (@Game_id, @Score)";
+
+        using var command = new SqlCommand(InsertQuery, connection);
+        command.Parameters.Add("@Game_id", SqlDbType.BigInt).Value = game_id;
+        command.Parameters.Add("@Score", SqlDbType.BigInt).Value = score;
+
+        int i = await command.ExecuteNonQueryAsync();
+        return i != -1;
+
+    }
     public bool DoesExist()
     {
         database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
