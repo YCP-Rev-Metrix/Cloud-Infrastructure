@@ -39,7 +39,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   comment:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [build]
     steps:
     - name: Create commit comment if build passed
@@ -56,7 +56,7 @@ jobs:
           Build & Test Failed
 
   publish-nuget:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [build]
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.nuget && github.ref == 'refs/heads/master'
     steps:
@@ -125,7 +125,7 @@ jobs:
         run: dotnet nuget push C:/clientpackage/*.nupkg --api-key ${{ secrets.PACKAGES_PERSONAL_TOKEN }} -s https://nuget.pkg.github.com/YCP-Rev-Metrix/index.json --no-symbols
 
   generate-swagger:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [build]
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' && github.event.inputs.publish
     steps:
@@ -146,7 +146,7 @@ jobs:
 
   commit-swagger:
       name: Commit Swagger.json
-      runs-on: ubuntu-latest
+      runs-on: [self-hosted]
       needs: [generate-swagger]
       if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
       steps:
@@ -172,7 +172,7 @@ jobs:
             
   docker:
     name: Publish - Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [build]
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
@@ -192,7 +192,7 @@ jobs:
 
   redeploy:
     name: Redeploy webhook call
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [docker]
     steps:
       - name: Deploy docker container webhook
@@ -201,14 +201,14 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL  }}
 
   delay:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [redeploy]
     steps:
     - name: Wait for 30 seconds
       run: sleep 30
 
   test-endpoint:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [delay]
     steps:
     - name: Check Endpoint
