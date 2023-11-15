@@ -42,20 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v3
-      - name: Add commit comment
-        run: |
-          comment = "Build & test inconclusive"
-          if [[ "${{ needs.build.result }}" == "success" ]]; then
-            comment = "Built and test passed"
-          else
-            comment = "Build and test failed"
-          fi
-          jq -nc '{"body": "$comment"}' | \
-          curl -sL  -X POST -d @- \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/comments"
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            Build & Test Completed
 
   publish-nuget:
     runs-on: ubuntu-latest
