@@ -7,7 +7,7 @@
 		<Description>POCO items for Client</Description>
 		<PackageDescription>POCO items for Client</PackageDescription>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.10</Version>
+        <Version>1.0.11</Version>
         <Authors>RevMetrix</Authors>
         <Company>RevMetrix</Company>
         <Nullable>enable</Nullable>
