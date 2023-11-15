@@ -27,10 +27,10 @@ public class ResearchDB : AbstractDatabase
     }
     public void CreateTables()
     {
-        Database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+        database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         if (!Server.Databases.Contains(DatabaseName))
         {
-            Database.Create();
+            database.Create();
         }
         // Otherwise breakout of createTables
         else
@@ -40,7 +40,7 @@ public class ResearchDB : AbstractDatabase
 
         //Shot table 
         {
-            var ShotTable = new Table(Database, "Shot");
+            var ShotTable = new Table(database, "Shot");
 
             var pins_remaining = new Column(ShotTable, "pins_remaining", DataType.Binary(2)) //4 bits for each Binary
             {
@@ -96,7 +96,7 @@ public class ResearchDB : AbstractDatabase
 
             // Create the primary key constraint using SQL
             string sql = "ALTER TABLE [Shot] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
-            Database.ExecuteNonQuery(sql);
+            database.ExecuteNonQuery(sql);
 
             // TODO: add shot_id PK as a SQL Query
             // TODO: add ball_id FK as a SQL Query

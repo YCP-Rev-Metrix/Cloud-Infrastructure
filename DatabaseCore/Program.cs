@@ -12,5 +12,6 @@ internal class Program
 
         _ = userDB.Kill();
         userDB.CreateTables();
+
     }
 }

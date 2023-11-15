@@ -33,7 +33,7 @@ public class FeaturedAPI : APIConnection
         if (RefreshToken == null) // Refresh token does not exist
         {
             LogWriter.LogDebug("Attempting to log in using username & password");
-            APIResponse<DualToken> token = await Post<DualToken, UserIdentification>("User/Authorize", new(username, password));
+            APIResponse<DualToken> token = await Post<DualToken, UserIdentification>("User/Authorize", new("firstname", "lastname", username, password, "testing@gmail.com", "570-000-0000"));
             if (token.IsValid) // Logged in with user credentials
             {
                 SetAuthJWT(token.Result!.TokenA);
