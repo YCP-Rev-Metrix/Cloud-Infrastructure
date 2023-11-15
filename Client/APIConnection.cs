@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using Common.POCOs;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Client;
 

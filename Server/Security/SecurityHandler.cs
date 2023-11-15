@@ -17,7 +17,7 @@ public class SecurityHandler
         AuthorizationSigningCredentials = new(AuthorizationSigningTokenKey, SecurityAlgorithms.HmacSha256Signature);
     }
 
-    private byte[] GenerateRandomBytes(int length)
+    public byte[] GenerateRandomBytes(int length)
     {
         byte[] randomBytes = new byte[length];
         RandomNumberGenerator.GetBytes(randomBytes);
