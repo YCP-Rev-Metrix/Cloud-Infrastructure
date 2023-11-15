@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Common.POCOs;
 public class Shot : POCO
@@ -31,7 +30,7 @@ public class Shot : POCO
         Dx = x_position;
         Dy = y_position;
         Dz = z_position;
-        
+
     }
 
     public BigInteger User_id { get; set; }
@@ -50,7 +49,4 @@ public class Shot : POCO
     public float Dy { get; set; }
     public float Dz { get; set; }
 
-   
-
-   
 }

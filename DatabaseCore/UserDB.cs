@@ -1,13 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Common.Logging;
+using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data;
-using Microsoft.SqlServer.Management.Common;
-using System.Xml;
-using System.Runtime.CompilerServices;
 using System.Numerics;
-using Common.Logging;
-using Common.POCOs;
-using System;
 
 namespace DatabaseCore;
 
@@ -23,16 +18,16 @@ public class UserDB : AbstractDatabase
 
         //ServerConnection serverConnection = new ServerConnection("localhost");
         // Server server = new Server(serverConnection);
-        Database database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
-        
+        var database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
+
         // Will need to look at this part!
         if (!Server.Databases.Contains(DatabaseName))
-            {
+        {
             database.Create();
         }
         else
         {
-            
+
         }
         // Using the database this way due to some error that happens when using database above with the new object
         // Continues to give error about not being able to create the tables when parent isn't created first
@@ -95,7 +90,7 @@ public class UserDB : AbstractDatabase
             UserTable.Columns.Add(phone);
 
             // ID
-        
+
             var id = new Column(UserTable, "id", DataType.BigInt)
             {
                 IdentityIncrement = 1,
@@ -105,11 +100,9 @@ public class UserDB : AbstractDatabase
             };
             UserTable.Columns.Add(id);
 
-
             if (!temp.Tables.Contains("User"))
             {
                 UserTable.Create();
-
 
                 // Create the primary key constraint using SQL
                 string sql = "ALTER TABLE [User] ADD CONSTRAINT PK_User PRIMARY KEY (id);";
@@ -146,7 +139,6 @@ public class UserDB : AbstractDatabase
                 Nullable = false
             };
             TokenTable.Columns.Add(token);
-
 
             if (!temp.Tables.Contains("RefreshToken"))
             {
@@ -196,7 +188,6 @@ public class UserDB : AbstractDatabase
             var event_type = new Column(EventTable, "event_type", DataType.VarChar(50));
             EventTable.Columns.Add(event_type);
 
-
             if (!temp.Tables.Contains("Event"))
             {
                 EventTable.Create();
@@ -221,7 +212,6 @@ public class UserDB : AbstractDatabase
                     userIdKey.Create();
                 }
             }
-
 
         }
 
@@ -424,7 +414,6 @@ public class UserDB : AbstractDatabase
             var total_frames = new Column(SessionTable, "total_frames", DataType.BigInt);
             SessionTable.Columns.Add(total_frames);
 
-
             if (!temp.Tables.Contains("Session"))
             {
                 SessionTable.Create();
@@ -472,11 +461,9 @@ public class UserDB : AbstractDatabase
 
                     practiceIdKey.Create();
 
-
                 }
 
             }
-
 
         }
 
@@ -505,16 +492,13 @@ public class UserDB : AbstractDatabase
             var score = new Column(GameTable, "score", DataType.VarChar(255));
             GameTable.Columns.Add(score);
 
-
             if (!temp.Tables.Contains("Game"))
             {
                 GameTable.Create();
 
-
                 // Create the primary key constraint using SQL
                 string sql = "ALTER TABLE [Game] ADD CONSTRAINT PK_Game PRIMARY KEY (game_id);";
                 temp.ExecuteNonQuery(sql);
-
 
                 // Create the foreign key after the "GameTable" has been created
                 {
@@ -560,7 +544,6 @@ public class UserDB : AbstractDatabase
             var score = new Column(FrameTable, "score", DataType.VarChar(255));
             FrameTable.Columns.Add(score);
 
-
             if (!temp.Tables.Contains("Frame"))
             {
                 FrameTable.Create();
@@ -585,7 +568,6 @@ public class UserDB : AbstractDatabase
 
                 gameIdKey.Create();
             }
-
 
         }
 
@@ -614,7 +596,6 @@ public class UserDB : AbstractDatabase
             if (!temp.Tables.Contains("Video"))
             {
                 VideoTable.Create();
-
 
                 // Create the primary key constraint using SQL
                 string sql = "ALTER TABLE [Video] ADD CONSTRAINT PK_Video PRIMARY KEY (video_id);";
@@ -652,7 +633,6 @@ public class UserDB : AbstractDatabase
             if (!temp.Tables.Contains("Ball"))
             {
                 BallTable.Create();
-
 
                 // Create the primary key constraint using SQL
                 string sql = "ALTER TABLE [Ball] ADD CONSTRAINT PK_Ball PRIMARY KEY (ball_id);";
@@ -815,100 +795,81 @@ public class UserDB : AbstractDatabase
 
         }
 
-
     }
 
     public async Task Kill()
     {
 
-            using var connection = new SqlConnection(ConnectionString);
-            await connection.OpenAsync();
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
 
-            // This will need to be adjusted to see if constraints are being reset in order.
-            // As well as the order of Dropping the table 
+        // This will need to be adjusted to see if constraints are being reset in order.
+        // As well as the order of Dropping the table 
 
-            // Get Rid of The Key Constraints for Shot
-            string noConstraint = "Use [revmetrix-u] ALTER TABLE [Shot] NOCHECK CONSTRAINT all";
-            using var command1 = new SqlCommand(noConstraint, connection);
-            command1.ExecuteNonQuery();
+        // Get Rid of The Key Constraints for Shot
+        string noConstraint = "Use [revmetrix-u] ALTER TABLE [Shot] NOCHECK CONSTRAINT all";
+        using var command1 = new SqlCommand(noConstraint, connection);
+        _ = command1.ExecuteNonQuery();
 
-            // Dropping the Shot Table
-            string dropShot = "DROP TABLE [Shot]";
-            using var command2 = new SqlCommand(dropShot, connection);
-            command2.ExecuteNonQuery();
+        // Dropping the Shot Table
+        string dropShot = "DROP TABLE [Shot]";
+        using var command2 = new SqlCommand(dropShot, connection);
+        _ = command2.ExecuteNonQuery();
 
-            // Dropping the Video Table
-            string dropVideo = "DROP TABLE [Video]";
-            using var command3 = new SqlCommand(dropVideo, connection);
-            command3.ExecuteNonQuery();
+        // Dropping the Video Table
+        string dropVideo = "DROP TABLE [Video]";
+        using var command3 = new SqlCommand(dropVideo, connection);
+        _ = command3.ExecuteNonQuery();
 
-            // Dropping the Ball Table
-            string dropBall = "DROP TABLE [Ball]";
-            using var command4 = new SqlCommand(dropBall, connection);
-            command4.ExecuteNonQuery();
+        // Dropping the Ball Table
+        string dropBall = "DROP TABLE [Ball]";
+        using var command4 = new SqlCommand(dropBall, connection);
+        _ = command4.ExecuteNonQuery();
 
-            // Dropping the Frame Table
-            string dropFrame = "DROP TABLE [Frame]";
-            using var command5 = new SqlCommand(dropFrame, connection);
-            command5.ExecuteNonQuery();
+        // Dropping the Frame Table
+        string dropFrame = "DROP TABLE [Frame]";
+        using var command5 = new SqlCommand(dropFrame, connection);
+        _ = command5.ExecuteNonQuery();
 
-            // Dropping the Game Table
-            string dropGame = "DROP TABLE [Game]";
-            using var command6 = new SqlCommand(dropGame, connection);
-            command6.ExecuteNonQuery();
+        // Dropping the Game Table
+        string dropGame = "DROP TABLE [Game]";
+        using var command6 = new SqlCommand(dropGame, connection);
+        _ = command6.ExecuteNonQuery();
 
-            // Dropping the Session Table
-            string dropSession = "DROP TABLE [Session]";
-            using var command7 = new SqlCommand(dropSession, connection);
-            command7.ExecuteNonQuery();
+        // Dropping the Session Table
+        string dropSession = "DROP TABLE [Session]";
+        using var command7 = new SqlCommand(dropSession, connection);
+        _ = command7.ExecuteNonQuery();
 
-            // Dropping the League Table
-            string dropLeague = "DROP TABLE [League]";
-            using var command8 = new SqlCommand(dropLeague, connection);
-            command8.ExecuteNonQuery();
+        // Dropping the League Table
+        string dropLeague = "DROP TABLE [League]";
+        using var command8 = new SqlCommand(dropLeague, connection);
+        _ = command8.ExecuteNonQuery();
 
-            // Dropping the Tournament Table
-            string dropTournament = "DROP TABLE [Tournament]";
-            using var command9 = new SqlCommand(dropTournament, connection);
-            command9.ExecuteNonQuery();
+        // Dropping the Tournament Table
+        string dropTournament = "DROP TABLE [Tournament]";
+        using var command9 = new SqlCommand(dropTournament, connection);
+        _ = command9.ExecuteNonQuery();
 
-            // Dropping the Practice Table
-            string dropPractice = "DROP TABLE [Practice]";
-            using var command10 = new SqlCommand(dropPractice, connection);
-            command10.ExecuteNonQuery();
+        // Dropping the Practice Table
+        string dropPractice = "DROP TABLE [Practice]";
+        using var command10 = new SqlCommand(dropPractice, connection);
+        _ = command10.ExecuteNonQuery();
 
-            // Dropping the Event Table 
-            string dropEvent = "DROP TABLE [Event]";
-            using var command11 = new SqlCommand(dropEvent, connection);
-            command11.ExecuteNonQuery();
+        // Dropping the Event Table 
+        string dropEvent = "DROP TABLE [Event]";
+        using var command11 = new SqlCommand(dropEvent, connection);
+        _ = command11.ExecuteNonQuery();
 
-            // Dropping the RefreshToken Table
-            string dropRefreshToken = "DROP TABLE [RefreshToken]";
-            using var command12 = new SqlCommand(dropRefreshToken, connection);
-            command12.ExecuteNonQuery();
+        // Dropping the RefreshToken Table
+        string dropRefreshToken = "DROP TABLE [RefreshToken]";
+        using var command12 = new SqlCommand(dropRefreshToken, connection);
+        _ = command12.ExecuteNonQuery();
 
-            // Droping the User Table
-            string dropUser = "DROP TABLE [User]";
-            using var command13 = new SqlCommand(dropUser, connection);
-            command13.ExecuteNonQuery();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // Droping the User Table
+        string dropUser = "DROP TABLE [User]";
+        using var command13 = new SqlCommand(dropUser, connection);
+        _ = command13.ExecuteNonQuery();
 
     }
 
@@ -936,7 +897,6 @@ public class UserDB : AbstractDatabase
         command.Parameters.Add("@Password", SqlDbType.VarBinary, -1).Value = hashedPassword;
         command.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
         command.Parameters.Add("@Phone", SqlDbType.VarChar).Value = phone;
-
 
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();
@@ -1094,7 +1054,7 @@ public class UserDB : AbstractDatabase
                                        float ddz,
                                        float x_position,
                                        float y_position,
-                                       float z_position  )
+                                       float z_position)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
@@ -1109,7 +1069,7 @@ public class UserDB : AbstractDatabase
         command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = ball_id;
         command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = video_id;
         command.Parameters.Add("@Pins_remaining", SqlDbType.VarBinary, 2).Value = pins_remaining;
-        command.Parameters.Add("@Time",SqlDbType.DateTime, 2).Value = time;
+        command.Parameters.Add("@Time", SqlDbType.DateTime, 2).Value = time;
         command.Parameters.Add("@Lane_number", SqlDbType.VarBinary, 2).Value = lane_number;
         command.Parameters.Add("Ddx", SqlDbType.Float).Value = ddx;
         command.Parameters.Add("Ddy", SqlDbType.Float).Value = ddy;
@@ -1126,15 +1086,7 @@ public class UserDB : AbstractDatabase
     public bool DoesExist()
     {
         database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
-        if (!Server.Databases.Contains(DatabaseName))
-        {
-            return true;
-        }
-        // Otherwise breakout of createTables
-        else
-        {
-            return false;
-        }
+        return !Server.Databases.Contains(DatabaseName);
     }
 
 }
