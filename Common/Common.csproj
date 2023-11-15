@@ -6,7 +6,6 @@
 		<Title>RevMetrix Common API Dependancy</Title>
 		<Description>POCO items for Client</Description>
 		<PackageDescription>POCO items for Client</PackageDescription>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
         <Version>1.0.10</Version>
         <Authors>RevMetrix</Authors>
         <Company>RevMetrix</Company>
