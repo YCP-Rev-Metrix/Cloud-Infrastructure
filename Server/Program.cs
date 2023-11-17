@@ -22,6 +22,7 @@ internal class Program
         _ = builder.Services.AddEndpointsApiExplorer();
         _ = builder.Services.AddSwaggerGen();
 
+        // Allows use of JWTs
         _ = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -49,9 +50,10 @@ internal class Program
 
         // app.UseHttpsRedirection();
 
-        // Verify token not blacklisted
+        // Verify token is not blacklisted
         _ = app.UseMiddleware<VerifyJWTBlacklistMiddleware>();
 
+        // This allows the use of [Authorize] 
         _ = app.UseAuthorization();
 
         _ = app.MapControllers();
