@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseCoreTests", "Databa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{AF9834F7-B128-455C-91AE-DB58368F8D39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommon", "TestCommon\TestCommon.csproj", "{7DEE4325-401E-4DD3-B4CB-CC095969D217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommon", "TestCommon\TestCommon.csproj", "{7DEE4325-401E-4DD3-B4CB-CC095969D217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
