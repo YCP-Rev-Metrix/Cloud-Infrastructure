@@ -1,4 +1,8 @@
 ﻿namespace Common.POCOs;
+
+/// <summary>
+/// Defines a POCO representing a user's identification
+/// </summary>
 public class UserIdentification : POCO
 {
     public UserIdentification(string firstname, string lastname, string username, string password, string email, string phone_number)

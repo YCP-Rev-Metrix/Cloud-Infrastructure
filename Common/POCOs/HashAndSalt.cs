@@ -1,4 +1,8 @@
 ﻿namespace Common.POCOs;
+
+/// <summary>
+/// Defines a POCO representing a salted and hashed password
+/// </summary>
 public class HashAndSalt : POCO
 {
     public byte[] Hash { set; get; }
