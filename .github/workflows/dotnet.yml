@@ -37,18 +37,12 @@ jobs:
         path: ./Server/bin/Debug/net7.0/
     - name: Test
       run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults.trx"
-    - name: Print directories
-      run: |
-        echo "Current directory:"
-        pwd
-        echo "Subdirectories:"
-        ls -R
     - name: Publish Unit Test Results
       uses: dorny/test-reporter@v1
       if: success() || failure()
       with:
         name: .NET Tests
-        path: 'ServerTests\TestResults\TestResults.trx,ClientTests\TestResults\TestResults.trx,DatabaseCoreTests\TestResults\TestResults.trx'
+        path: './ServerTests/TestResults/TestResults.trx,./ClientTests/TestResults/TestResults.trx,./DatabaseCoreTests/TestResults/TestResults.trx'
         reporter: dotnet-trx
 
   comment-build:
