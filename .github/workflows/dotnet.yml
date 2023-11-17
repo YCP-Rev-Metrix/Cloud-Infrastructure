@@ -36,7 +36,19 @@ jobs:
         name: build-artifacts
         path: ./Server/bin/Debug/net7.0/
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=TestResults.trx"
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: ./TestResults.trx
+    - name: Publish Unit Test Results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: .NET Tests
+        path: ./TestResults.trx
+        reporter: dotnet-trx
 
   comment-build:
     runs-on: [self-hosted]
