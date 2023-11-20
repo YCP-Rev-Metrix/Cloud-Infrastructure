@@ -4,7 +4,7 @@
     "title": "Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
     "version": "1.0"
   },
-  "host": "https://api.revmetrix.io",
+  "host": "api.revmetrix.io",
   "schemes": [
     "https"
   ],
