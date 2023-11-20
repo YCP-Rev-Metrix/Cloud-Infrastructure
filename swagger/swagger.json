@@ -5,6 +5,9 @@
     "version": "1.0"
   },
   "servers": [{ "url": "https://api.revmetrix.io" }],
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/api/Insert/Insert": {
       "post": {
