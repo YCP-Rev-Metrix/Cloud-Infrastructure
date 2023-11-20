@@ -246,12 +246,12 @@
                   "$ref": "#/components/schemas/DateTimePoco"
                 }
               },
-              "text/plain": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DateTimePoco"
                 }
               },
-              "text/plain": {
+              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DateTimePoco"
                 }
