@@ -5,7 +5,10 @@
     "version": "1.0"
   },
   "host": "https://api.revmetrix.io",
-  "basepath": "/",
+  "schemes": [
+    "https"
+  ],
+  "basePath": "",
   "paths": {
     "/api/Insert/Insert": {
       "post": {
