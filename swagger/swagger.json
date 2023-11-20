@@ -233,6 +233,14 @@
     },
     "/api/Test/TestTime": {
       "get": {
+        "parameters": [ {
+          "name": "auth",
+          "in": "header",
+          "description": "an authorization header",
+          "required": true,
+          "type": "string"
+          }
+        ],
         "tags": [
           "Test"
         ],
