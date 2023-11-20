@@ -4,11 +4,7 @@
     "title": "Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
     "version": "1.0"
   },
-  "host": "api.revmetrix.io",
-  "schemes": [
-    "https"
-  ],
-  "basePath": "",
+  "servers": [{ "url": "https://api.revmetrix.io" }],
   "paths": {
     "/api/Insert/Insert": {
       "post": {
