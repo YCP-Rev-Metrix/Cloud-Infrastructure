@@ -4,7 +4,7 @@
     "title": "Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
     "version": "1.0"
   },
-  "servers": [{ "url": "https://api.revmetrix.io" }],
+  "servers": [{ "url": "https://cors-anywhere.herokuapp.com/https://api.revmetrix.io" }],
   "schemes": [
     "https"
   ],
