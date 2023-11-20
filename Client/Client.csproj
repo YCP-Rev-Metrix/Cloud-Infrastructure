@@ -14,9 +14,11 @@
 	<Pack>true</Pack>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
+    <Compile Remove="Logs\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <None Remove="Logs\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Logs\" />
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 </Project>

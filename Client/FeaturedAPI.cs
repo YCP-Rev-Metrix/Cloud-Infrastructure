@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Common.POCOs;
+﻿using Common.POCOs;
 using System.Net.Http.Headers;
 
 namespace Client;
@@ -32,57 +31,57 @@ public class FeaturedAPI : APIConnection
     {
         if (RefreshToken == null) // Refresh token does not exist
         {
-            LogWriter.LogDebug("Attempting to log in using username & password");
+            Console.WriteLine("Attempting to log in using username & password");
             APIResponse<DualToken> token = await Post<DualToken, UserIdentification>("User/Authorize", new("firstname", "lastname", username, password, "testing@gmail.com", "570-000-0000"));
             if (token.IsValid) // Logged in with user credentials
             {
                 SetAuthJWT(token.Result!.TokenA);
                 RefreshToken = token.Result!.TokenB;
-                LogWriter.LogDebug("Logged in successfully");
+                Console.WriteLine("Logged in successfully");
                 return true;
             }
             else if (token.StatusCode == System.Net.HttpStatusCode.Unauthorized)  // Incorrect credentials
             {
-                LogWriter.LogError("Failed to log in: incorrect credentials");
+                Console.WriteLine("Failed to log in: incorrect credentials");
                 return false;
             }
             else if (token.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges
             {
-                LogWriter.LogError("Failed to log in: incorrect privileges");
+                Console.WriteLine("Failed to log in: incorrect privileges");
                 return false;
             }
             else  // Unknown
             {
-                LogWriter.LogError("Failed to log in: unkown cause");
+                Console.WriteLine("Failed to log in: unkown cause");
                 return false;
             }
         }
         else // Refresh token exists
         {
-            LogWriter.LogDebug("Attempting to refresh authorization token");
+            Console.WriteLine("Attempting to refresh authorization token");
             APIResponse<DualToken> refresh = await Post<DualToken, ByteArrayToken>("User/Refresh", new ByteArrayToken(RefreshToken));
             if (refresh.IsValid) // Refreshed token
             {
                 SetAuthJWT(refresh.Result!.TokenA);
                 RefreshToken = refresh.Result!.TokenB;
-                LogWriter.LogDebug("Refreshed authorization token successfully");
+                Console.WriteLine("Refreshed authorization token successfully");
                 return true;
             }
             else if (refresh.StatusCode == System.Net.HttpStatusCode.Unauthorized) // Old refresh token
             {
                 RefreshToken = null;
-                LogWriter.LogError("Refresh token no longer valid");
+                Console.WriteLine("Refresh token no longer valid");
                 return await Login(username, password);
             }
             else if (refresh.StatusCode == System.Net.HttpStatusCode.Forbidden) // Incorrect privileges or user not in system
             {
                 RefreshToken = null;
-                LogWriter.LogError("Failed to refresh authorization token: incorrect privileges");
+                Console.WriteLine("Failed to refresh authorization token: incorrect privileges");
                 return await Login(username, password);
             }
             else // Unknown
             {
-                LogWriter.LogError("Failed to refresh authorization token: unkown cause");
+                Console.WriteLine("Failed to refresh authorization token: unkown cause");
                 return false;
             }
         }
