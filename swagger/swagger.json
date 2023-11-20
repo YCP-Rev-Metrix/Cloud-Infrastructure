@@ -227,7 +227,7 @@
         }
       }
     },
-    "/api/Test/TestTime": {
+    "https://api.revmetrix.io/api/Test/TestTime": {
       "get": {
         "tags": [
           "Test"
