@@ -4,6 +4,7 @@
     "title": "Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
     "version": "1.0"
   },
+  "host": "https://api.revmetrix.io",
   "paths": {
     "/api/Insert/Insert": {
       "post": {
@@ -74,7 +75,7 @@
         }
       }
     },
-    "https://api.revmetrix.io/api/Research/Testing": {
+    "/api/Research/Testing": {
       "post": {
         "tags": [
           "Research"
@@ -227,7 +228,7 @@
         }
       }
     },
-    "https://api.revmetrix.io/api/Test/TestTime": {
+    "/api/Test/TestTime": {
       "get": {
         "tags": [
           "Test"
