@@ -6,7 +6,7 @@
   },
   "servers": [{ "url": "https://api.revmetrix.io" }],
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
     "/api/Insert/Insert": {
@@ -233,14 +233,6 @@
     },
     "/api/Test/TestTime": {
       "get": {
-        "parameters": [ {
-          "name": "auth",
-          "in": "header",
-          "description": "an authorization header",
-          "required": true,
-          "type": "string"
-          }
-        ],
         "tags": [
           "Test"
         ],
