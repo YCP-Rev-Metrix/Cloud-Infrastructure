@@ -155,11 +155,15 @@ jobs:
     steps:
     - name: Install Swashbuckle CLI
       run: dotnet tool update --global Swashbuckle.AspNetCore.Cli --version 6.5.0 || true
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
       with:
-        name: build-artifacts
-        path: ./Server/bin/Debug/net7.0/
+        dotnet-version: 7.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
     - name: Generate OpenAPI document
       run: ~/.dotnet/tools/swagger tofile --output ./swagger.json ./Server/bin/Debug/net7.0/Server.dll v1
     - name: Upload OpenAPI document
