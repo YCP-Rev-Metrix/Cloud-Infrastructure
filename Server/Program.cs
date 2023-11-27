@@ -31,7 +31,7 @@ internal class Program
         _ = builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
-                builder => builder.WithOrigins("https://api.revmetrix.io", "https://docs.revmetrix.io/", "https://github.com/")
+                builder => builder.WithOrigins("https://api.revmetrix.io", "https://docs.revmetrix.io", "https://github.com")
                 .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
         });
 
