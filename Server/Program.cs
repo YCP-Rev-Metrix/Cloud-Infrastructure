@@ -22,6 +22,12 @@ internal class Program
         _ = builder.Services.AddEndpointsApiExplorer();
         _ = builder.Services.AddSwaggerGen();
 
+        _ = builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+        });
+
         // Allows use of JWTs
         _ = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -47,6 +53,8 @@ internal class Program
             _ = app.UseSwagger();
             _ = app.UseSwaggerUI();
         }
+
+        _ = app.UseCors("AllowAll");
 
         // app.UseHttpsRedirection();
 
