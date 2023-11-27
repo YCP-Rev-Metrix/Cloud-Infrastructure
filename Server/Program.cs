@@ -20,7 +20,13 @@ internal class Program
         _ = builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         _ = builder.Services.AddEndpointsApiExplorer();
-        _ = builder.Services.AddSwaggerGen();
+        _ = builder.Services.AddSwaggerGen(c =>
+        {
+            c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer()
+            {
+                Url = "https://api.revmetrix.io"
+            });
+        });
 
         _ = builder.Services.AddCors(options =>
         {
