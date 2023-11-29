@@ -30,7 +30,7 @@ public class DatabaseUserStore : AbstractUserStore
         {
             string[] roles = result.roles.Split(',');
             byte[] hashedPassword = ServerState.SecurityHandler.SaltHashPassword(password, result.salt);
-            return AreByteArraysEqual(hashedPassword, result.hashedPassword) ? ((bool success, string[]? roles))(true, roles) : ((bool success, string[]? roles))(false, roles);
+            return hashedPassword.SequenceEqual(result.hashedPassword) ? ((bool success, string[]? roles))(true, roles) : ((bool success, string[]? roles))(false, roles);
         }
         else
         {

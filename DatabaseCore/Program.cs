@@ -1,9 +1,4 @@
-﻿using Common.Logging;
-using Common.POCOs;
-using Microsoft.SqlServer.Management.Smo;
-
-
-namespace DatabaseCore;
+﻿namespace DatabaseCore;
 
 internal class Program
 {

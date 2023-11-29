@@ -18,7 +18,7 @@ public abstract class AbstractDatabase
         string? DockerizedEnviron = Environment.GetEnvironmentVariable("DOCKERIZED");
         ConnectionString = DockerizedEnviron == null
             ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
-              //$"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
+            //$"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
             : DockerizedEnviron == "Dockerized"
                 ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
                 : $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;";
@@ -28,7 +28,6 @@ public abstract class AbstractDatabase
         DatabaseName = databaseName;
         Initialize();
 
-
     }
 
     public void Initialize()
@@ -37,8 +36,6 @@ public abstract class AbstractDatabase
         // Server = new Server(serverConnection);
         Server = new Server(new ServerConnection(new SqlConnection(ConnectionString)));
         database = Server.Databases[DatabaseName];
-
-
 
     }
 

@@ -1,5 +1,4 @@
 using Client;
-using Common.Logging;
 using System.Net;
 
 internal class Program
@@ -10,8 +9,6 @@ internal class Program
 
     private static async Task Main(string[] args)
     {
-        LogWriter.OutputLevel = Common.Logging.LogLevel.DEBUG;
-
         _ = await Connection.Login("testies", "J0rd@n");
 
         Thread.Sleep(1000);

@@ -1,6 +1,6 @@
-﻿using Common.Logging;
-using Common.POCOs;
+﻿using Common.POCOs;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Client;
 
@@ -87,7 +87,7 @@ public class APIConnection
     /// <returns><see cref="APIResponse{TResult}"/> representing the result from the request</returns>
     public async Task<APIResponse<TResult>> Get<TResult>(string url, CancellationToken cancellationToken) where TResult : POCO
     {
-        LogWriter.LogInfo("Get Issued");
+        Console.WriteLine("Get Issued");
 
         HttpResponseMessage response = await Client.GetAsync(url, cancellationToken);
 
@@ -102,7 +102,7 @@ public class APIConnection
     /// <returns><see cref="APIResponse"/> representing the result from the request</returns>
     public async Task<APIResponse> Get(string url, CancellationToken cancellationToken)
     {
-        LogWriter.LogInfo("Get Issued");
+        Console.WriteLine("Get Issued");
 
         HttpResponseMessage response = await Client.GetAsync(url, cancellationToken);
 
@@ -187,7 +187,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Post Issued");
+        Console.WriteLine("Post Issued");
 
         HttpResponseMessage response = await Client.PostAsync(url, payload, cancellationToken);
 
@@ -206,7 +206,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Post Issued");
+        Console.WriteLine("Post Issued");
 
         HttpResponseMessage response = await Client.PostAsync(url, payload, cancellationToken);
 
@@ -291,7 +291,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Put Issued");
+        Console.WriteLine("Put Issued");
 
         HttpResponseMessage response = await Client.PutAsync(url, payload, cancellationToken);
 
@@ -310,7 +310,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Put Issued");
+        Console.WriteLine("Put Issued");
 
         HttpResponseMessage response = await Client.PutAsync(url, payload, cancellationToken);
 
@@ -395,7 +395,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Patch Issued");
+        Console.WriteLine("Patch Issued");
 
         HttpResponseMessage response = await Client.PatchAsync(url, payload, cancellationToken);
 
@@ -414,7 +414,7 @@ public class APIConnection
     {
         var payload = JsonContent.Create(content);
 
-        LogWriter.LogInfo("Patch Issued");
+        Console.WriteLine("Patch Issued");
 
         HttpResponseMessage response = await Client.PatchAsync(url, payload, cancellationToken);
 
@@ -483,7 +483,7 @@ public class APIConnection
     /// <returns><see cref="APIResponse{TResult}"/> representing the result from the request</returns>
     public async Task<APIResponse<TResult>> Delete<TResult>(string url, CancellationToken cancellationToken) where TResult : POCO
     {
-        LogWriter.LogInfo("Delete Issued");
+        Console.WriteLine("Delete Issued");
 
         HttpResponseMessage response = await Client.DeleteAsync(url, cancellationToken);
 
@@ -498,7 +498,7 @@ public class APIConnection
     /// <returns><see cref="APIResponse"/> representing the result from the request</returns>
     public async Task<APIResponse> Delete(string url, CancellationToken cancellationToken)
     {
-        LogWriter.LogInfo("Delete Issued");
+        Console.WriteLine("Delete Issued");
 
         HttpResponseMessage response = await Client.DeleteAsync(url, cancellationToken);
 
@@ -510,12 +510,12 @@ public class APIConnection
     {
         if (response.IsSuccessStatusCode)
         {
-            LogWriter.LogInfo($"{requestType} succeded");
+            Console.WriteLine($"{requestType} succeded");
             return new APIResponse<TResult>(response, await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken));
         }
         else
         {
-            LogWriter.LogWarn($"{requestType} failed: {(int)response.StatusCode} - {response.ReasonPhrase}");
+            Console.WriteLine($"{requestType} failed: {(int)response.StatusCode} - {response.ReasonPhrase}");
             return new APIResponse<TResult>(response);
         }
     }
@@ -524,11 +524,11 @@ public class APIConnection
     {
         if (response.IsSuccessStatusCode)
         {
-            LogWriter.LogInfo($"{requestType} succeded");
+            Console.WriteLine($"{requestType} succeded");
         }
         else
         {
-            LogWriter.LogWarn($"{requestType} failed: {(int)response.StatusCode} - {response.ReasonPhrase}");
+            Console.WriteLine($"{requestType} failed: {(int)response.StatusCode} - {response.ReasonPhrase}");
         }
 
         return new APIResponse(response);

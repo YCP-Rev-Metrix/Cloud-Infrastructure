@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers;
-// Authorize Refresh Register
-// Logout Unregister ChangePassword
 
 [ApiController]
 [Route("api/[controller]")]

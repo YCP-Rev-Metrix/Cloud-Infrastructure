@@ -1,5 +1,8 @@
 ﻿namespace Server;
 
+/// <summary>
+/// Provides configuration from appsettings.json files
+/// </summary>
 public static class Config
 {
     private static readonly IConfiguration Configuration;
