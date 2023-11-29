@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Common.POCOs;
 public class Shot : POCO
@@ -50,7 +49,4 @@ public class Shot : POCO
     public float Y_position { get; set; }
     public float Z_position { get; set; }
 
-   
-
-   
 }

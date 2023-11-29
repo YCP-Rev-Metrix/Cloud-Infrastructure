@@ -20,8 +20,22 @@ internal class Program
         _ = builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         _ = builder.Services.AddEndpointsApiExplorer();
-        _ = builder.Services.AddSwaggerGen();
+        _ = builder.Services.AddSwaggerGen(c =>
+        {
+            c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer()
+            {
+                Url = "https://api.revmetrix.io"
+            });
+        });
 
+        _ = builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder => builder.WithOrigins("https://api.revmetrix.io", "https://docs.revmetrix.io", "https://github.com")
+                .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+        });
+
+        // Allows use of JWTs
         _ = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -47,11 +61,14 @@ internal class Program
             _ = app.UseSwaggerUI();
         }
 
+        _ = app.UseCors("AllowAll");
+
         // app.UseHttpsRedirection();
 
-        // Verify token not blacklisted
+        // Verify token is not blacklisted
         _ = app.UseMiddleware<VerifyJWTBlacklistMiddleware>();
 
+        // This allows the use of [Authorize] 
         _ = app.UseAuthorization();
 
         _ = app.MapControllers();

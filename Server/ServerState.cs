@@ -11,13 +11,28 @@ namespace Server;
 /// </summary>
 public static class ServerState
 {
+    /// <summary>
+    /// Provides a basic <see cref="SecurityHandler"/> in order to handle tasks like byte[] generation or password management
+    /// </summary>
     public static readonly SecurityHandler SecurityHandler = new();
 
+    /// <summary>
+    /// Handles interactions with the User Database
+    /// </summary>
     public static readonly UserDB UserDatabase = new();
 
+    /// <summary>
+    /// Handles interactions with the Research Database
+    /// </summary>
     public static readonly ResearchDB ResearchDatabase = new();
 
+    /// <summary>
+    /// Provides functionality surrounding JWTs and refresh tokens
+    /// </summary>
     public static readonly AbstractTokenStore TokenStore = new DatabaseTokenStore(TimeSpan.FromMinutes(60), TimeSpan.FromHours(24), TimeSpan.FromMinutes(5));
 
+    /// <summary>
+    /// Provides functionality surrounding Users such as role management & user authentication
+    /// </summary>
     public static readonly AbstractUserStore UserStore = new DatabaseUserStore();
 }
