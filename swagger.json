@@ -10,75 +10,6 @@
     }
   ],
   "paths": {
-    "/api/Insert/Insert": {
-      "post": {
-        "tags": [
-          "Insert"
-        ],
-        "operationId": "Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DualToken"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DualToken"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DualToken"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Research/Testing": {
       "post": {
         "tags": [
@@ -622,39 +553,316 @@
           }
         }
       }
+    },
+    "/api/User/InsertBall": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "InsertBall",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/StartSession": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "StartSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/StartPractice": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "StartPractice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Practice"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Practice"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Practice"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/StartEvent": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "StartEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/StartGame": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "StartGame",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Game"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/StartFrame": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "StartFrame",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Frame"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Frame"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Frame"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "BigInteger": {
+      "Ball": {
         "type": "object",
         "properties": {
-          "isPowerOfTwo": {
-            "type": "boolean",
-            "readOnly": true
+          "weight": {
+            "type": "number",
+            "format": "float"
           },
-          "isZero": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "isOne": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "isEven": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "sign": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
+          "color": {
+            "type": "string",
+            "nullable": true
           }
         },
-        "additionalProperties": false
-      },
-      "BinaryData": {
-        "type": "object",
         "additionalProperties": false
       },
       "ByteArrayToken": {
@@ -693,6 +901,48 @@
         },
         "additionalProperties": false
       },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "event_type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Frame": {
+        "type": "object",
+        "properties": {
+          "game_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "HashAndSalt": {
         "type": "object",
         "properties": {
@@ -715,6 +965,16 @@
           "rawPassword": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Practice": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -746,30 +1006,68 @@
         },
         "additionalProperties": { }
       },
-      "Shot": {
+      "Session": {
         "type": "object",
         "properties": {
-          "user_id": {
-            "$ref": "#/components/schemas/BigInteger"
+          "leauge_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
-          "frame_id": {
-            "$ref": "#/components/schemas/BigInteger"
+          "tournament_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
-          "ball_id": {
-            "$ref": "#/components/schemas/BigInteger"
-          },
-          "video_id": {
-            "$ref": "#/components/schemas/BigInteger"
-          },
-          "pins_remaining": {
-            "$ref": "#/components/schemas/BinaryData"
+          "practice_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "time": {
             "type": "string",
             "format": "date-time"
           },
-          "lane_Number": {
-            "$ref": "#/components/schemas/BinaryData"
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "total_Games": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total_Frames": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Shot": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "frame_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ball_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "video_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
           },
           "ddx": {
             "type": "number",
@@ -783,15 +1081,15 @@
             "type": "number",
             "format": "float"
           },
-          "dx": {
+          "x_position": {
             "type": "number",
             "format": "float"
           },
-          "dy": {
+          "y_position": {
             "type": "number",
             "format": "float"
           },
-          "dz": {
+          "z_position": {
             "type": "number",
             "format": "float"
           }
