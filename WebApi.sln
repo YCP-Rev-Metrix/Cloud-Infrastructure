@@ -14,12 +14,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerTests", "ServerTests\ServerTests.csproj", "{AA6E36DF-BDEF-4FAC-9613-C3634F49BFF6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientTests", "ClientTests\ClientTests.csproj", "{160AF8DE-A5AC-420A-A266-6E7034435EDC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{60F74243-BE66-4C5A-89EF-ABFF20423063} = {60F74243-BE66-4C5A-89EF-ABFF20423063}
+		{D4CDDE23-FF40-41E4-8CFA-91D6FE80FD06} = {D4CDDE23-FF40-41E4-8CFA-91D6FE80FD06}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseCoreTests", "DatabaseCoreTests\DatabaseCoreTests.csproj", "{D361892E-7743-47F0-B7D9-0D16CE5CCAC2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{AF9834F7-B128-455C-91AE-DB58368F8D39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommon", "TestCommon\TestCommon.csproj", "{7DEE4325-401E-4DD3-B4CB-CC095969D217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommon", "TestCommon\TestCommon.csproj", "{7DEE4325-401E-4DD3-B4CB-CC095969D217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
