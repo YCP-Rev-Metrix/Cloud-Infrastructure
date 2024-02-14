@@ -6,16 +6,12 @@
 		<Title>RevMetrix Common API Dependancy</Title>
 		<Description>POCO items for Client</Description>
 		<PackageDescription>POCO items for Client</PackageDescription>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.10</Version>
+        <Version>1.0.14</Version>
         <Authors>RevMetrix</Authors>
         <Company>RevMetrix</Company>
         <Nullable>enable</Nullable>
 	    <IsPackable>true</IsPackable>
     </PropertyGroup>
-	<ItemGroup>
-		<None Include="README.md " Pack="true" PackagePath="\"/>
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Memory.Data" Version="7.0.0" />
 	</ItemGroup>
