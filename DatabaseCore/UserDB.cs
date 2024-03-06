@@ -969,6 +969,29 @@ public class UserDB : AbstractDatabase
             return (false, null, null, null);
         }
     }
+    public async Task<(bool success, string firstnames, string lastnames)> GetUsers()
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string selectQuery = "SELECT firstname, lastname FROM[User] WHERE firstname = 'rob'";
+
+        using var command = new SqlCommand(selectQuery, connection);
+
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            // Retrieve the columns
+            string firstnames = reader["firstname"].ToString();
+            string lastnames = reader["lastname"].ToString();
+
+            return (true, firstnames, lastnames);
+        }
+        else
+        {
+            return (false, null, null);
+        }
+    }
 
     public async Task<bool> AddRefreshToken(byte[] token, string username, DateTime expiration)
     {
