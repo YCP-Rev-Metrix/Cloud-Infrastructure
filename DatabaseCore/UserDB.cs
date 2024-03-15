@@ -1269,34 +1269,10 @@ public class UserDB : AbstractDatabase
         return i != -1;
 
     }
-
     public bool DoesExist()
     {
         database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         return !Server.Databases.Contains(DatabaseName);
     }
 
-    public async Task<(bool success, string firstnames, string lastnames)> GetUsers()
-    {
-        using var connection = new SqlConnection(ConnectionString);
-        await connection.OpenAsync();
-
-        string selectQuery = "SELECT firstname, lastname FROM[User] WHERE firstname = 'rob'";
-
-        using var command = new SqlCommand(selectQuery, connection);
-
-        using SqlDataReader reader = await command.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
-        {
-            // Retrieve the columns
-            string firstnames = reader["firstname"].ToString();
-            string lastnames = reader["lastname"].ToString();
-
-            return (true, firstnames, lastnames);
-        }
-        else
-        {
-            return (false, null, null);
-        }
-    }
 }

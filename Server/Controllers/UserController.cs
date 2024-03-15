@@ -210,12 +210,4 @@ public class UserController : AbstractFeaturedController
         return Ok(await ServerState.UserStore.StartFrame(frame.Game_id, frame.Score));
     }
 
-    [HttpGet("GetUsers", Name = "GetUsers")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsers()
-    {
-        return Ok(await ServerState.UserDatabase.GetUsers());
-    }
-
-
 }
