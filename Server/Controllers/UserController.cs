@@ -210,4 +210,12 @@ public class UserController : AbstractFeaturedController
         return Ok(await ServerState.UserStore.StartFrame(frame.Game_id, frame.Score));
     }
 
+    [HttpGet("GetBall", Name = "GetBall")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartFrame([FromBody] Ball ball)
+    {
+        return Ok();
+
+    }
+
 }
