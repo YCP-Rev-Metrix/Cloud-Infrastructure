@@ -211,11 +211,20 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpGet("GetUsers", Name = "GetUsers")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof((bool success, List<string> firstnames, List<string> lastnames)), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUsers()
     {
-        return Ok(await ServerState.UserDatabase.GetUsers());
+        var (success, firstnames, lastnames) = await ServerState.UserDatabase.GetUsers();
+
+        if (success)
+        {
+            var users = firstnames.Zip(lastnames, (firstname, lastname) => new { firstname, lastname }).ToList();
+            return Ok(users);
+        }
+        else
+        {
+            return NotFound("No users found.");
+        }
     }
-
-
 }
