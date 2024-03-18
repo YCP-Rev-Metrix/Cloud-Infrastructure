@@ -1283,7 +1283,7 @@ public class UserDB : AbstractDatabase
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM [User]"; // Adjusted to select more fields
+        string selectQuery = "SELECT firstname, lastname FROM [User]"; // Adjusted to select more fields
 
         using var command = new SqlCommand(selectQuery, connection);
 
@@ -1297,11 +1297,6 @@ public class UserDB : AbstractDatabase
             {
                 Firstname = reader["firstname"].ToString(),
                 Lastname = reader["lastname"].ToString(),
-                Username = reader["username"].ToString(),
-                Email = reader["email"].ToString(),
-                Phone_number = reader["phone"].ToString(),
-                // Do not retrieve or include the Password in the response
-                Password = null // Ensure passwords are not included
             };
 
             users.Add(user);

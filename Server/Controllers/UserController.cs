@@ -230,28 +230,4 @@ public class UserController : AbstractFeaturedController
             return NotFound("No users found.");
         }
     }
-
-
-    /*[HttpGet("GetUsers", Name = "GetUsers")]
-    [ProducesResponseType(typeof(List<UserIdentification>), StatusCodes.Status200OK)] // Use UserIdentification in the response type
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUsers()
-    {
-        var (success, firstnames, lastnames) = await ServerState.UserDatabase.GetUsers();
-
-        if (success)
-        {
-            var users = firstnames.Zip(lastnames, (firstname, lastname) => new UserIdentification
-            {
-                Firstname = firstname,
-                Lastname = lastname
-                // Omit setting Username, Password, Email, and Phone_number for the response
-            }).ToList();
-            return Ok(users);
-        }
-        else
-        {
-            return NotFound("No users found.");
-        }
-    }*/
 }
