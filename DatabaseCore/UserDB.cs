@@ -1282,7 +1282,7 @@ public class UserDB : AbstractDatabase
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM [User]"; // Adjusted to select more fields
+        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM dbo.[User]"; // Adjusted to select more fields
 
         using var command = new SqlCommand(selectQuery, connection);
 
