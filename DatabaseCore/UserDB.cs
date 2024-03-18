@@ -1,4 +1,5 @@
 ﻿using Common.Logging;
+using Common.POCOs;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data;
@@ -1269,10 +1270,68 @@ public class UserDB : AbstractDatabase
         return i != -1;
 
     }
+
     public bool DoesExist()
     {
         database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
         return !Server.Databases.Contains(DatabaseName);
     }
 
+    public async Task<(bool success, List<UserIdentification> users)> GetUsers()
+    {
+        ConnectionString = "Server=143.110.146.58,1433;Database=revmetrix-u;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string selectQuery = "SELECT firstname, lastname FROM [User]"; // Adjusted to select more fields
+
+        using var command = new SqlCommand(selectQuery, connection);
+
+        var users = new List<UserIdentification>();
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
+        {
+            // Construct a new UserIdentification object for each row
+            var user = new UserIdentification
+            {
+                Firstname = reader["firstname"].ToString(),
+                Lastname = reader["lastname"].ToString(),
+            };
+
+            users.Add(user);
+        }
+
+        return (users.Any(), users);
+    }
+
+    /*public async Task<(bool success, List<string> firstnames, List<string> lastnames)> GetUsers()
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string selectQuery = "SELECT firstname, lastname FROM [User]"; // Removed the WHERE clause
+
+        using var command = new SqlCommand(selectQuery, connection);
+
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+        var firstnames = new List<string>();
+        var lastnames = new List<string>();
+
+        while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
+        {
+            // Retrieve the columns for each row
+            firstnames.Add(reader["firstname"].ToString());
+            lastnames.Add(reader["lastname"].ToString());
+        }
+
+        if (firstnames.Any() && lastnames.Any())
+        {
+            return (true, firstnames, lastnames);
+        }
+        else
+        {
+            return (false, null, null);
+        }
+    }*/
 }
