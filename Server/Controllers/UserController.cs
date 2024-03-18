@@ -211,7 +211,29 @@ public class UserController : AbstractFeaturedController
     }
 
     [HttpGet("GetUsers", Name = "GetUsers")]
-    [ProducesResponseType(typeof((bool success, List<string> firstnames, List<string> lastnames)), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<UserIdentification>), StatusCodes.Status200OK)] // Assuming this is the DTO containing user information without sensitive data
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUsers()
+    {
+        // Attempt to get the list of users from the database
+        var (success, users) = await ServerState.UserDatabase.GetUsers();
+
+        // If the operation was successful and we have users, return them
+        if (success)
+        {
+            // Return OK with the list of users
+            return Ok(users);
+        }
+        else
+        {
+            // If no users were found, return a 404 Not Found
+            return NotFound("No users found.");
+        }
+    }
+
+
+    /*[HttpGet("GetUsers", Name = "GetUsers")]
+    [ProducesResponseType(typeof(List<UserIdentification>), StatusCodes.Status200OK)] // Use UserIdentification in the response type
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUsers()
     {
@@ -219,12 +241,17 @@ public class UserController : AbstractFeaturedController
 
         if (success)
         {
-            var users = firstnames.Zip(lastnames, (firstname, lastname) => new { firstname, lastname }).ToList();
+            var users = firstnames.Zip(lastnames, (firstname, lastname) => new UserIdentification
+            {
+                Firstname = firstname,
+                Lastname = lastname
+                // Omit setting Username, Password, Email, and Phone_number for the response
+            }).ToList();
             return Ok(users);
         }
         else
         {
             return NotFound("No users found.");
         }
-    }
+    }*/
 }

@@ -1,4 +1,5 @@
 ﻿using Common.Logging;
+using Common.POCOs;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data;
@@ -1276,7 +1277,39 @@ public class UserDB : AbstractDatabase
         return !Server.Databases.Contains(DatabaseName);
     }
 
-    public async Task<(bool success, List<string> firstnames, List<string> lastnames)> GetUsers()
+    public async Task<(bool success, List<UserIdentification> users)> GetUsers()
+    {
+        using var connection = new SqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM [User]"; // Adjusted to select more fields
+
+        using var command = new SqlCommand(selectQuery, connection);
+
+        var users = new List<UserIdentification>();
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
+        {
+            // Construct a new UserIdentification object for each row
+            var user = new UserIdentification
+            {
+                Firstname = reader["firstname"].ToString(),
+                Lastname = reader["lastname"].ToString(),
+                Username = reader["username"].ToString(),
+                Email = reader["email"].ToString(),
+                Phone_number = reader["phone"].ToString(),
+                // Do not retrieve or include the Password in the response
+                Password = null // Ensure passwords are not included
+            };
+
+            users.Add(user);
+        }
+
+        return (users.Any(), users);
+    }
+
+    /*public async Task<(bool success, List<string> firstnames, List<string> lastnames)> GetUsers()
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
@@ -1304,5 +1337,5 @@ public class UserDB : AbstractDatabase
         {
             return (false, null, null);
         }
-    }
+    }*/
 }

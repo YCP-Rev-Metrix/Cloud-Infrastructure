@@ -5,6 +5,8 @@
 /// </summary>
 public class UserIdentification : POCO
 {
+    public UserIdentification() { }
+
     public UserIdentification(string firstname, string lastname, string username, string password, string email, string phone_number)
     {
         Firstname = firstname;
