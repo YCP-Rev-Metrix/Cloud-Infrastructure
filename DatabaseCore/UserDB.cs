@@ -1279,10 +1279,11 @@ public class UserDB : AbstractDatabase
 
     public async Task<(bool success, List<UserIdentification> users)> GetUsers()
     {
+        ConnectionString = "Server=143.110.146.58,1433;Database=revmetrix-u;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM dbo.[User]"; // Adjusted to select more fields
+        string selectQuery = "SELECT firstname, lastname, username, email, phone FROM [User]"; // Adjusted to select more fields
 
         using var command = new SqlCommand(selectQuery, connection);
 
