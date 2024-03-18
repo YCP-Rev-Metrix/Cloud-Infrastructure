@@ -860,17 +860,37 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -893,6 +913,10 @@
             "nullable": true
           }
         },
+        "additionalProperties": false
+      },
+      "BooleanStringListStringListValueTuple": {
+        "type": "object",
         "additionalProperties": false
       },
       "ByteArrayToken": {
