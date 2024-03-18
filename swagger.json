@@ -860,17 +860,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BooleanStringListStringListValueTuple"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
                 }
               }
             }
@@ -913,10 +922,6 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
-      },
-      "BooleanStringListStringListValueTuple": {
-        "type": "object",
         "additionalProperties": false
       },
       "ByteArrayToken": {
