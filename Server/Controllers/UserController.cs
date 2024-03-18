@@ -230,4 +230,13 @@ public class UserController : AbstractFeaturedController
             return NotFound("No users found.");
         }
     }
+
+    [HttpGet("GetBall", Name = "GetBall")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    public async Task<IActionResult> StartFrame([FromBody] Ball ball)
+    {
+        return Ok();
+
+    }
+
 }

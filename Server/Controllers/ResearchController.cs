@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common.POCOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers;
 
@@ -6,20 +7,51 @@ namespace Server.Controllers;
 [Route("api/[controller]")]
 public class ResearchController : AbstractFeaturedController
 {
-    private static readonly Random random = new();
-
-    private readonly byte[] pins_remaining = new byte[8];
-    private readonly DateTime time = DateTime.Now;
-    private readonly byte[] lane_number = new byte[8];
-    private readonly float x = random.NextInt64();
-    private readonly float y = random.NextInt64();
-    private readonly float z = random.NextInt64();
 
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-    [HttpPost("Testing", Name = "Testing")]
-    public async Task<IActionResult> CreateShot() =>
+    [HttpPost("InsertVideo", Name = "InsertVideo")]
+    public async Task<IActionResult> CreateVideo([FromBody] Video video)
+    {
+        return Ok(await ServerState.ResearchDatabase.AddVideo(video.Video_file, video.Video_id));
+    }
 
-        //ServerState.ResearchDatabase.CreateTables();
-        Ok(await ServerState.ResearchDatabase.AddShot(pins_remaining, time, lane_number, x, y, z));
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [HttpPost("Insertddx", Name = "Insertddx")]
+    public async Task<IActionResult> CreateDdx([FromBody] ddx ddx)
+    {
+        return Ok(await ServerState.ResearchDatabase.AddDdx(ddx.Accelerations));
+    }
+
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [HttpPost("Insertddy", Name = "Insertddy")]
+    public async Task<IActionResult> CreateDdy([FromBody] ddy ddy)
+    {
+        return Ok(await ServerState.ResearchDatabase.AddDdy(ddy.Accelerations));
+    }
+
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [HttpPost("Insertddz", Name = "Insertddz")]
+    public async Task<IActionResult> CreateDdz([FromBody] ddz ddz)
+    {
+        return Ok(await ServerState.ResearchDatabase.AddDdz(ddz.Accelerations));
+    }
+
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [HttpPost("InsertLight", Name = "InsertLight")]
+    public async Task<IActionResult> CreateLight([FromBody] Light light)
+    {
+        return Ok(await ServerState.ResearchDatabase.AddLight(light.Light_levels));
+    }
+
+     //TODO:GET Endpionts, Data -> Date -> Session? -> -> User 
+     [HttpGet("GetShot", Name = "GetShot")]
+     [ProducesResponseType(typeof(Shot), StatusCodes.Status200OK)]
+     public async Task<IActionResult>  GetShot([FromBody] UserIdentification user)
+     {
+         return Ok(await ServerState.ResearchDatabase.GetShotData(user.Username));
+     }
+
+
+
 
 }
