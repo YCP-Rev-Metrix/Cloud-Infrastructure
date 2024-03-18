@@ -44,5 +44,14 @@ public class ResearchController : AbstractFeaturedController
     }
 
      //TODO:GET Endpionts, Data -> Date -> Session? -> -> User 
+     [HttpGet("GetShot", Name = "GetShot")]
+     [ProducesResponseType(typeof(Shot), StatusCodes.Status200OK)]
+     public async Task<IActionResult>  GetShot([FromBody] UserIdentification user)
+     {
+         return Ok(await ServerState.ResearchDatabase.GetShotData(user.Username));
+     }
+
+
+
 
 }

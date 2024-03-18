@@ -524,28 +524,31 @@ public class ResearchDB : AbstractDatabase
         return i != -1;
     }
 
-    public async Task<(bool success, DateTime time)> GetShotData(byte[] lane_number)
+    public async Task<(bool success, string time, byte[] xPositions, byte[] yPositions, byte[] zPositions  )> GetShotData(string username)
     {
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT time, x_positions, y_positions, z_positions FROM [Shot] WHERE Lane_number = @Lane_number";
+        string selectQuery = "SELECT time, x_positions, y_positions, z_positions FROM [Shot] WHERE username = @Username";
 
         using var command = new SqlCommand(selectQuery, connection);
-        command.Parameters.Add("@Lane_number", SqlDbType.VarChar, 255).Value = lane_number;
+        command.Parameters.Add("@Username", SqlDbType.VarChar, 255).Value = username;
 
         using SqlDataReader reader = await command.ExecuteReaderAsync();
         if (await reader.ReadAsync())
         {
             // Retrieve the columns
 
-            var db_time = Convert.ToDateTime(reader["time"].ToString());
+            string db_time= reader["time"].ToString();
+            byte[] db_x_positions = (byte[])reader["x_positions"];
+            byte[] db_y_positions = (byte[])reader["y_positions"];
+            byte[] db_z_positions = (byte[])reader["z_positions"];
 
-            return (true, db_time);
+            return (true, db_time, db_x_positions, db_y_positions, db_z_positions);
         }
         else
         {
-            return (false, DateTime.UnixEpoch);
+            return (false, null, null, null, null);
         }
     }
 
