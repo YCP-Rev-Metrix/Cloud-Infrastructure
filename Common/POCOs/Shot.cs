@@ -7,9 +7,9 @@ public class Shot : POCO
                 int? frame_id,
                 int? ball_id,
                 int? video_id,
-                BinaryData pins_remaining,
+                byte[] pins_remaining,
                 DateTime time,
-                BinaryData lane_number,
+                byte[] lane_number,
                 float ddx,
                 float ddy,
                 float ddz,
@@ -38,10 +38,10 @@ public class Shot : POCO
 
     public int? Ball_id { get; set; }
     public int? Video_id { get; set; }
-    public BinaryData Pins_remaining { get; set; }
+    public byte[] Pins_remaining { get; set; }
     public DateTime Time { get; set; }
 
-    public BinaryData Lane_Number { get; set; }
+    public byte[] Lane_Number { get; set; }
     public float Ddx { get; set; }
     public float Ddy { get; set; }
     public float Ddz { get; set; }
