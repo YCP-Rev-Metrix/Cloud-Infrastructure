@@ -1305,7 +1305,7 @@ public class UserDB : AbstractDatabase
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT * FROM [Shot]"; // select all shots
+        string selectQuery = "SELECT user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position FROM [Shot]"; // select all shots
 
         using var command = new SqlCommand(selectQuery, connection);
 

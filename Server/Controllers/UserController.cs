@@ -247,8 +247,8 @@ public class UserController : AbstractFeaturedController
         }
         else
         {
-            // If no users were found, return a 404 Not Found
-            return NotFound("No users found.");
+            // If no shots were found, return a 404 Not Found
+            return NotFound("No shots found.");
         }
     }
 }
