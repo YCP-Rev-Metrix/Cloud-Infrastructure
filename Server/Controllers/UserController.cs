@@ -141,24 +141,25 @@ public class UserController : AbstractFeaturedController
 
     [HttpPost("InsertShot", Name = "InsertShot")]
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-
     public async Task<IActionResult> InsertShot([FromBody] Shot shot)
     {
-        
-        return Ok(await ServerState.UserStore.InsertShot(shot.User_id,
-                                                      shot.Frame_id,
-                                                      shot.Ball_id,
-                                                      shot.Video_id,
-                                                      //shot.Pins_remaining,
-                                                      shot.Time,
-                                                      //shot.Lane_Number,
-                                                      shot.Ddx,
-                                                      shot.Ddy,
-                                                      shot.Ddz,
-                                                      shot.X_position,
-                                                      shot.Y_position,
-                                                      shot.Z_position
-                                                      ));
+        var result = await ServerState.UserDatabase.InsertShot(
+            shot.User_id,
+            shot.Frame_id,
+            shot.Ball_id,
+            shot.Video_id,
+            shot.Pins_remaining,
+            shot.Time,
+            shot.Lane_Number,
+            shot.Ddx,
+            shot.Ddy,
+            shot.Ddz,
+            shot.X_position,
+            shot.Y_position,
+            shot.Z_position
+        );
+
+        return Ok(result);
     }
 
 
