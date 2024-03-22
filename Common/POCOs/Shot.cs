@@ -8,8 +8,8 @@ public class Shot : POCO
     public Shot() { }
 
     // Parameterized constructor can still exist and be used elsewhere
-    public Shot(int user_id, int? frame_id, int? ball_id, int? video_id, BinaryData pins_remaining,
-                DateTime time, BinaryData lane_number, float ddx, float ddy, float ddz,
+    public Shot(int user_id, int? frame_id, int? ball_id, int? video_id, byte[] pins_remaining,
+                DateTime time, byte[] lane_number, float ddx, float ddy, float ddz,
                 float x_position, float y_position, float z_position)
     {
         User_id = user_id;
@@ -32,9 +32,9 @@ public class Shot : POCO
     public int? Frame_id { get; set; }
     public int? Ball_id { get; set; }
     public int? Video_id { get; set; }
-    public BinaryData Pins_remaining { get; set; }
+    public byte[] Pins_remaining { get; set; }
     public DateTime Time { get; set; }
-    public BinaryData Lane_Number { get; set; }
+    public byte[] Lane_Number { get; set; }
     public float Ddx { get; set; }
     public float Ddy { get; set; }
     public float Ddz { get; set; }
