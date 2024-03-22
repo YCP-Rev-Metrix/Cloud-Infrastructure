@@ -178,8 +178,9 @@ jobs:
     - name: Commit and push changes
       run: |
          git add ./swagger.json
-         git commit -m "Update swagger.json"
-         git push origin ${{ github.ref }} || echo "No changes to commit"
+         git diff --staged --exit-code || echo "No changes to swagger.json"
+         git diff-index --quiet HEAD || git commit -m "Update swagger.json"
+         git push origin ${{ github.ref }} || echo "No changes to commit or push"
             
   docker:
     name: Publish - Docker Hub
