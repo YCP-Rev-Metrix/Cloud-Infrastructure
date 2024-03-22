@@ -3,6 +3,11 @@
 namespace Common.POCOs;
 public class Shot : POCO
 {
+    public Shot()
+    {
+
+    }
+
     public Shot(int user_id,
                 int? frame_id,
                 int? ball_id,

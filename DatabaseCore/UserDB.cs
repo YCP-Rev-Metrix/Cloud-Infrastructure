@@ -85,7 +85,6 @@ public class UserDB : AbstractDatabase
             UserTable.Columns.Add(phone);
 
             // ID
-
             var id = new Column(UserTable, "id", DataType.BigInt)
             {
                 IdentityIncrement = 1,
@@ -954,7 +953,7 @@ public class UserDB : AbstractDatabase
         {
             // Retrieve the columns
             string db_roles = reader["roles"].ToString();
-            byte[] db_hashedPassword = (byte[])reader["password"]; ;
+            byte[] db_hashedPassword = (byte[])reader["password"];
             byte[] db_salt = (byte[])reader["salt"];
 
             return (true, db_salt, db_roles, db_hashedPassword);
@@ -1054,13 +1053,13 @@ public class UserDB : AbstractDatabase
                                        float z_position)
     {
         ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
-        //ConnectionString = "Data Source=localhost;Database=revmetrix-u;Integrated Security=True;TrustServerCertificate=True;";
 
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
         string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position) " +
                      "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, @Z_position)";
+        
         using var command = new SqlCommand(insertQuery, connection);
 
         // Set the parameter values
@@ -1130,8 +1129,6 @@ public class UserDB : AbstractDatabase
             command.Parameters.Add("@Color", SqlDbType.VarChar).Value = DBNull.Value;
         }
 
-        
-        //command.Parameters.Add("@Color", SqlDbType.VarChar).Value = color;
    
         int i = await command.ExecuteNonQueryAsync();
         return i != -1;
