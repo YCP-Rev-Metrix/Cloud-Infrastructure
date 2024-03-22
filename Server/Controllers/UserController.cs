@@ -143,7 +143,7 @@ public class UserController : AbstractFeaturedController
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     public async Task<IActionResult> InsertShot([FromBody] Shot shot)
     {
-        var result = await ServerState.UserDatabase.InsertShot(
+        var result = await ServerState.UserStore.InsertShot(
             shot.User_id,
             shot.Frame_id,
             shot.Ball_id,

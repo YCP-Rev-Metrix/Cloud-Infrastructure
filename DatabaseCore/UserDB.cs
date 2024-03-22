@@ -1042,9 +1042,9 @@ public class UserDB : AbstractDatabase
                                        int? frame_id,
                                        int? ball_id,
                                        int? video_id,
-                                       byte[] pins_remaining,
+                                       BinaryData pins_remaining,
                                        DateTime time,
-                                       byte[] lane_number,
+                                       BinaryData lane_number,
                                        float ddx,
                                        float ddy,
                                        float ddz,
@@ -1105,7 +1105,6 @@ public class UserDB : AbstractDatabase
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();
         return i != -1;
-
     }
 
     public async Task<bool> Insertball(float weight, string? color)
@@ -1250,8 +1249,7 @@ public class UserDB : AbstractDatabase
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string InsertQuery = "INSERT INTO [Frame] (game_id, score)" +
-                                "VALUES (@Game_id, @Score)";
+        string InsertQuery = "INSERT INTO [Frame] (game_id, score)" + "VALUES (@Game_id, @Score)";
 
         using var command = new SqlCommand(InsertQuery, connection);
         command.Parameters.Add("@Game_id", SqlDbType.BigInt).Value = game_id;
@@ -1317,9 +1315,9 @@ public class UserDB : AbstractDatabase
                 frame_id: reader.IsDBNull(reader.GetOrdinal("frame_id")) ? null : reader.GetInt32(reader.GetOrdinal("frame_id")),
                 ball_id: reader.IsDBNull(reader.GetOrdinal("ball_id")) ? null : reader.GetInt32(reader.GetOrdinal("ball_id")),
                 video_id: reader.IsDBNull(reader.GetOrdinal("video_id")) ? null : reader.GetInt32(reader.GetOrdinal("video_id")),
-                pins_remaining: (byte[])reader["pins_remaining"],
+                pins_remaining: (BinaryData)reader["pins_remaining"],
                 time: reader.GetDateTime(reader.GetOrdinal("time")),
-                lane_number: (byte[])reader["lane_number"],
+                lane_number: (BinaryData)reader["lane_number"],
                 ddx: reader.GetFloat(reader.GetOrdinal("ddx")),
                 ddy: reader.GetFloat(reader.GetOrdinal("ddy")),
                 ddz: reader.GetFloat(reader.GetOrdinal("ddz")),
