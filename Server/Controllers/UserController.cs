@@ -230,4 +230,25 @@ public class UserController : AbstractFeaturedController
             return NotFound("No users found.");
         }
     }
+
+    [HttpGet("GetShots", Name = "GetShots")]
+    [ProducesResponseType(typeof(List<Shot>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetShots()
+    {
+        // attempt to get the list of shots from the database
+        var (success, shots) = await ServerState.UserDatabase.GetShots();
+
+        // If the operation was successful and we have users, return them
+        if (success)
+        {
+            // Return OK with the list of users
+            return Ok(shots);
+        }
+        else
+        {
+            // If no users were found, return a 404 Not Found
+            return NotFound("No users found.");
+        }
+    }
 }
