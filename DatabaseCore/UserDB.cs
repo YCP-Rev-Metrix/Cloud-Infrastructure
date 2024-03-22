@@ -16,12 +16,9 @@ public class UserDB : AbstractDatabase
 
     public void CreateTables()
     {
-
-        //ServerConnection serverConnection = new ServerConnection("localhost");
-        // Server server = new Server(serverConnection);
         var database = new Microsoft.SqlServer.Management.Smo.Database(Server, DatabaseName);
 
-        // Will need to look at this part!
+        // will need to look at this part
         if (!Server.Databases.Contains(DatabaseName))
         {
             database.Create();
@@ -30,9 +27,6 @@ public class UserDB : AbstractDatabase
         {
 
         }
-        // Using the database this way due to some error that happens when using database above with the new object
-        // Continues to give error about not being able to create the tables when parent isn't created first
-        // Even tho the parent is created. 
         Database temp = Server.Databases[DatabaseName];
 
         // User Table
@@ -1292,7 +1286,7 @@ public class UserDB : AbstractDatabase
 
         while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
         {
-            // Construct a new UserIdentification object for each row
+            // construct a new UserIdentification object for each row
             var user = new UserIdentification
             {
                 Firstname = reader["firstname"].ToString(),
@@ -1305,33 +1299,41 @@ public class UserDB : AbstractDatabase
         return (users.Any(), users);
     }
 
-    /*public async Task<(bool success, List<string> firstnames, List<string> lastnames)> GetUsers()
+    public async Task<(bool success, List<Shot> shots)> GetShots()
     {
+        ConnectionString = "Server=143.110.146.58,1433;Database=revmetrix-u;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT firstname, lastname FROM [User]"; // Removed the WHERE clause
+        string selectQuery = "SELECT * FROM [Shot]"; // select all shots
 
         using var command = new SqlCommand(selectQuery, connection);
 
+        var shots = new List<Shot>();
         using SqlDataReader reader = await command.ExecuteReaderAsync();
-        var firstnames = new List<string>();
-        var lastnames = new List<string>();
 
         while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
         {
-            // Retrieve the columns for each row
-            firstnames.Add(reader["firstname"].ToString());
-            lastnames.Add(reader["lastname"].ToString());
+            // construct a new Shot object for each entry
+            var shot = new Shot(
+                user_id: reader.GetInt32(reader.GetOrdinal("user_id")),
+                frame_id: reader.IsDBNull(reader.GetOrdinal("frame_id")) ? null : reader.GetInt32(reader.GetOrdinal("frame_id")),
+                ball_id: reader.IsDBNull(reader.GetOrdinal("ball_id")) ? null : reader.GetInt32(reader.GetOrdinal("ball_id")),
+                video_id: reader.IsDBNull(reader.GetOrdinal("video_id")) ? null : reader.GetInt32(reader.GetOrdinal("video_id")),
+                pins_remaining: (BinaryData)reader["pins_remaining"],
+                time: reader.GetDateTime(reader.GetOrdinal("time")),
+                lane_number: (BinaryData)reader["lane_number"],
+                ddx: reader.GetFloat(reader.GetOrdinal("ddx")),
+                ddy: reader.GetFloat(reader.GetOrdinal("ddy")),
+                ddz: reader.GetFloat(reader.GetOrdinal("ddz")),
+                x_position: reader.GetFloat(reader.GetOrdinal("x_position")),
+                y_position: reader.GetFloat(reader.GetOrdinal("y_position")),
+                z_position: reader.GetFloat(reader.GetOrdinal("z_position"))
+            );
+
+            shots.Add(shot);
         }
 
-        if (firstnames.Any() && lastnames.Any())
-        {
-            return (true, firstnames, lastnames);
-        }
-        else
-        {
-            return (false, null, null);
-        }
-    }*/
+        return (shots.Any(), shots);
+    }
 }
