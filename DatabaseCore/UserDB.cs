@@ -1039,18 +1039,19 @@ public class UserDB : AbstractDatabase
     }
 
     public async Task<bool> InsertShot(int user_id,
-                                       int? frame_id,
-                                       int? ball_id,
-                                       int? video_id,
-                                       byte[] pins_remaining,
-                                       DateTime time,
-                                       byte[] lane_number,
-                                       float ddx,
-                                       float ddy,
-                                       float ddz,
-                                       float x_position,
-                                       float y_position,
-                                       float z_position)
+                                   int? frame_id,
+                                   int? ball_id,
+                                   int? video_id,
+                                   int pins_remaining,  // Changed from byte[] to int
+                                   DateTime time,
+                                   int lane_number,     // Changed from byte[] to int
+                                   float ddx,
+                                   float ddy,
+                                   float ddz,
+                                   float x_position,
+                                   float y_position,
+                                   float z_position
+        )
     {
         ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
 
@@ -1315,9 +1316,9 @@ public class UserDB : AbstractDatabase
                 frame_id: reader.IsDBNull(reader.GetOrdinal("frame_id")) ? null : reader.GetInt32(reader.GetOrdinal("frame_id")),
                 ball_id: reader.IsDBNull(reader.GetOrdinal("ball_id")) ? null : reader.GetInt32(reader.GetOrdinal("ball_id")),
                 video_id: reader.IsDBNull(reader.GetOrdinal("video_id")) ? null : reader.GetInt32(reader.GetOrdinal("video_id")),
-                pins_remaining: (byte[])reader["pins_remaining"],
+                pins_remaining: reader.GetInt32(reader.GetOrdinal("pins_remaining")),
                 time: reader.GetDateTime(reader.GetOrdinal("time")),
-                lane_number: (byte[])reader["lane_number"],
+                lane_number: reader.GetInt32(reader.GetOrdinal("lane_number")),
                 ddx: reader.GetFloat(reader.GetOrdinal("ddx")),
                 ddy: reader.GetFloat(reader.GetOrdinal("ddy")),
                 ddz: reader.GetFloat(reader.GetOrdinal("ddz")),

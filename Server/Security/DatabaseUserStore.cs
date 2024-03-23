@@ -56,19 +56,20 @@ public class DatabaseUserStore : AbstractUserStore
     }
 
     public override async Task<bool> InsertShot(int user_id, int? frame_id, int? ball_id, int? video_id, 
-                                                byte[] pins_remaining,
+                                                int pins_remaining,
                                                 DateTime time,
-                                                byte[] lane_number,
+                                                int lane_number,
                                                 float ddx, float ddy, float ddz, float x_position, float y_position, float z_position)
     {
-        /*// This is just for testing purposes 
+        // This is just for testing purposes 
         // Have to figure out how to accept binary from json and then convert
         // Issues with BinaryData
-        byte[] pins_remaining = new byte[8];
-        byte[] lane_number = new byte[8];*/
-        
+        //byte[] pins_remaining = new byte[8];
+        //byte[] lane_number = new byte[8];
+
         return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position);
     }
+
     public override async Task<bool> InsertBall(float weight, string? color)
     {
         return await ServerState.UserDatabase.Insertball(weight, color);
