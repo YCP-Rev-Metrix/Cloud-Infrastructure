@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Server.Security;
+namespace Server.Security.Stores;
 
 /// <summary>
 /// Object to generate, retrieve, renew, verify, and destroy tokens relating to security (JWT & refresh)

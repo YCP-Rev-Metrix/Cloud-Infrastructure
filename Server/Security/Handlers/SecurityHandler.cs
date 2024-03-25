@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Server.Security;
+namespace Server.Security.Handlers;
 
 /// <summary>
 /// Provides basic security items for the server

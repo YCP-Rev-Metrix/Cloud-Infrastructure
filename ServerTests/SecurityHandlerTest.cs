@@ -1,4 +1,4 @@
-﻿using Server.Security;
+﻿using Server.Security.Handlers;
 using TestCommon;
 
 namespace ServerTests;

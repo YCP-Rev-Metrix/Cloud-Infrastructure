@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Server.Security;
+namespace Server.Security.Stores;
 
 public abstract class AbstractUserStore
 {

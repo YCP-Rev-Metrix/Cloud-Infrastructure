@@ -1,17 +1,12 @@
-﻿namespace DatabaseCore;
+﻿namespace DatabaseCore.DatabaseComponents;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        var userDB = new UserDB();//ResearchDB ResearchDB = new ResearchDB();
-        var researchDB = new ResearchDB();
+        var revMetrixDB = new RevMetrixDB();
 
-        _ = researchDB.Kill();
-        researchDB.CreateTables();
-
-        _ = userDB.Kill();
-        userDB.CreateTables();
-
+        _ = revMetrixDB.Kill();
+        revMetrixDB.CreateTables();
     }
 }

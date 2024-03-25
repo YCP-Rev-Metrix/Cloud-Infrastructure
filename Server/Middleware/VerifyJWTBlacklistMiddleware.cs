@@ -3,7 +3,7 @@
 namespace Server.Middleware;
 
 /// <summary>
-///<see cref="IMiddleware"/> to verify that the the request's JWT is not in the blacklist via <see cref="Security.AbstractTokenStore"/>
+///<see cref="IMiddleware"/> to verify that the the request's JWT is not in the blacklist via <see cref="Security.Stores.AbstractTokenStore"/>
 /// </summary>
 public class VerifyJWTBlacklistMiddleware : IMiddleware
 {

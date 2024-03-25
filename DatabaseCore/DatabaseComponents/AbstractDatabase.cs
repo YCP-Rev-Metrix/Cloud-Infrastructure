@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace DatabaseCore;
+namespace DatabaseCore.DatabaseComponents;
 
 public abstract class AbstractDatabase
 {
@@ -18,7 +18,7 @@ public abstract class AbstractDatabase
         string? DockerizedEnviron = Environment.GetEnvironmentVariable("DOCKERIZED");
         ConnectionString = DockerizedEnviron == null
             ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
-            //$"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;"
+            // $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;" // Need to come back to this to fix local development 
             : DockerizedEnviron == "Dockerized"
                 ? $"Server=143.110.146.58,1433;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;"
                 : $"Data Source=localhost;Integrated Security=True;TrustServerCertificate=True;";
@@ -32,8 +32,10 @@ public abstract class AbstractDatabase
 
     public void Initialize()
     {
-        // serverConnection = new ServerConnection("localhost");
-        // Server = new Server(serverConnection);
+        /*
+        serverConnection = new ServerConnection("localhost");
+        Server = new Server(serverConnection);
+        */
         Server = new Server(new ServerConnection(new SqlConnection(ConnectionString)));
         database = Server.Databases[DatabaseName];
 

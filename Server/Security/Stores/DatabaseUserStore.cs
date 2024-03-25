@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Server.Security;
+namespace Server.Security.Stores;
 
 public class DatabaseUserStore : AbstractUserStore
 {
@@ -55,7 +55,7 @@ public class DatabaseUserStore : AbstractUserStore
         return true;
     }
 
-    public override async Task<bool> InsertShot(int user_id, int? frame_id, int? ball_id, int? video_id, 
+    public override async Task<bool> InsertShot(int user_id, int? frame_id, int? ball_id, int? video_id,
                                                 int pins_remaining,
                                                 DateTime time,
                                                 int lane_number,
@@ -66,6 +66,7 @@ public class DatabaseUserStore : AbstractUserStore
         // Issues with BinaryData
         //byte[] pins_remaining = new byte[8];
         //byte[] lane_number = new byte[8];
+        // NEED to figure out why the byte[] data type breaks the end point and how to go about fixing it
 
         return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position);
     }
@@ -82,14 +83,14 @@ public class DatabaseUserStore : AbstractUserStore
                                                            leauge_id, tournament_id, practice_id, time, location, total_games, total_frames);
     }
 
-    public override async Task<bool> StartPractice( int event_id)
+    public override async Task<bool> StartPractice(int event_id)
     {
-        return await ServerState.UserDatabase.Startpractice( event_id);
+        return await ServerState.UserDatabase.Startpractice(event_id);
     }
 
     public override async Task<bool> StartEvent(int user_id, string event_type)
     {
-        return await ServerState.UserDatabase.Startevent( user_id, event_type);
+        return await ServerState.UserDatabase.Startevent(user_id, event_type);
     }
 
     public override async Task<bool> StartGame(int session_id, int score)
@@ -98,7 +99,7 @@ public class DatabaseUserStore : AbstractUserStore
     }
     public override async Task<bool> StartFrame(int game_id, int score)
     {
-        return await ServerState.UserDatabase.Startframe( game_id, score);
+        return await ServerState.UserDatabase.Startframe(game_id, score);
     }
 }
 

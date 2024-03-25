@@ -1,5 +1,7 @@
 ﻿using DatabaseCore;
-using Server.Security;
+using DatabaseCore.DatabaseComponents;
+using Server.Security.Handlers;
+using Server.Security.Stores;
 
 namespace Server;
 
@@ -19,12 +21,7 @@ public static class ServerState
     /// <summary>
     /// Handles interactions with the User Database
     /// </summary>
-    public static readonly UserDB UserDatabase = new();
-
-    /// <summary>
-    /// Handles interactions with the Research Database
-    /// </summary>
-    public static readonly ResearchDB ResearchDatabase = new();
+    public static readonly RevMetrixDB UserDatabase = new();
 
     /// <summary>
     /// Provides functionality surrounding JWTs and refresh tokens

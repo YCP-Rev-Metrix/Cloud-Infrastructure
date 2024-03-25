@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Server.Controllers;
+namespace Server.Controllers.APIControllers;
 
 /// <summary>
 /// Provides base functionality for many controllers - will be added to in the future

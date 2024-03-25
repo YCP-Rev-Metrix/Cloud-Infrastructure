@@ -1,4 +1,4 @@
-﻿namespace Server.Security;
+﻿namespace Server.Security.Stores;
 
 public class DatabaseTokenStore : AbstractTokenStore
 {
