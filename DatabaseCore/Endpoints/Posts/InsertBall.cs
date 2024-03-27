@@ -8,7 +8,7 @@ public partial class RevMetrixDB
 {
     public async Task<bool> Insertball(float weight, string? color)
     {
-        ConnectionString = $"Server=143.110.146.58,1433;Database={DatabaseName};User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        ConnectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
 
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();

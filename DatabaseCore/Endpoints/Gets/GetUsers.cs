@@ -9,7 +9,7 @@ public partial class RevMetrixDB
 {
     public async Task<(bool success, List<UserIdentification> users)> GetUsers()
     {
-        ConnectionString = "Server=143.110.146.58,1433;Database=revmetrix-db;User Id=SA;Password=BigPass@Word!;TrustServerCertificate=True;";
+        ConnectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
