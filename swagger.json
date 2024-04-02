@@ -10,10 +10,141 @@
     }
   ],
   "paths": {
-    "/api/Authorize": {
+    "/api/deletes/Logout": {
+      "delete": {
+        "tags": [
+          "Deletes"
+        ],
+        "operationId": "Logout",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/gets/GetShots": {
+      "get": {
+        "tags": [
+          "Gets"
+        ],
+        "operationId": "GetShots",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/gets/GetUsers": {
+      "get": {
+        "tags": [
+          "Gets"
+        ],
+        "operationId": "GetUsers",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserIdentification"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/posts/Authorize": {
       "post": {
         "tags": [
-          "AuthAndRegister"
+          "Posts"
         ],
         "requestBody": {
           "content": {
@@ -78,10 +209,10 @@
         }
       }
     },
-    "/api/Register": {
+    "/api/posts/Register": {
       "post": {
         "tags": [
-          "AuthAndRegister"
+          "Posts"
         ],
         "requestBody": {
           "content": {
@@ -166,177 +297,10 @@
         }
       }
     },
-    "/api/GetShots": {
-      "get": {
-        "tags": [
-          "GetShots"
-        ],
-        "operationId": "GetShots",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Shot"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Shot"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Shot"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/GetUsers": {
-      "get": {
-        "tags": [
-          "GetUsers"
-        ],
-        "operationId": "GetUsers",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserIdentification"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserIdentification"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserIdentification"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/InsertBall": {
+    "/api/posts/InsertShot": {
       "post": {
         "tags": [
-          "InsertBall"
-        ],
-        "operationId": "InsertBall",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Ball"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Ball"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Ball"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/InsertShot": {
-      "post": {
-        "tags": [
-          "InsertShot"
+          "Posts"
         ],
         "operationId": "InsertShot",
         "requestBody": {
@@ -382,23 +346,10 @@
         }
       }
     },
-    "/api/Logout": {
-      "delete": {
-        "tags": [
-          "Logout"
-        ],
-        "operationId": "Logout",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Refresh": {
+    "/api/posts/Refresh": {
       "post": {
         "tags": [
-          "Refresh"
+          "Posts"
         ],
         "operationId": "Refresh",
         "requestBody": {
@@ -484,10 +435,91 @@
         }
       }
     },
-    "/api/StartEvent": {
+    "/api/posts/Unregister": {
       "post": {
         "tags": [
-          "StartEvent"
+          "Posts"
+        ],
+        "operationId": "Unregister",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdentification"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdentification"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserIdentification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/posts/InsertBall": {
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "operationId": "InsertBall",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ball"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/posts/StartEvent": {
+      "post": {
+        "tags": [
+          "Posts"
         ],
         "operationId": "StartEvent",
         "requestBody": {
@@ -533,10 +565,10 @@
         }
       }
     },
-    "/api/StartFrame": {
+    "/api/posts/StartFrame": {
       "post": {
         "tags": [
-          "StartFrame"
+          "Posts"
         ],
         "operationId": "StartFrame",
         "requestBody": {
@@ -582,10 +614,10 @@
         }
       }
     },
-    "/api/StartGame": {
+    "/api/posts/StartGame": {
       "post": {
         "tags": [
-          "StartGame"
+          "Posts"
         ],
         "operationId": "StartGame",
         "requestBody": {
@@ -631,10 +663,10 @@
         }
       }
     },
-    "/api/StartPractice": {
+    "/api/posts/StartPractice": {
       "post": {
         "tags": [
-          "StartPractice"
+          "Posts"
         ],
         "operationId": "StartPractice",
         "requestBody": {
@@ -680,10 +712,10 @@
         }
       }
     },
-    "/api/StartSession": {
+    "/api/posts/StartSession": {
       "post": {
         "tags": [
-          "StartSession"
+          "Posts"
         ],
         "operationId": "StartSession",
         "requestBody": {
@@ -729,10 +761,10 @@
         }
       }
     },
-    "/api/HashAndSalt": {
+    "/api/posts/HashAndSalt": {
       "post": {
         "tags": [
-          "SuperUser"
+          "Posts"
         ],
         "operationId": "HashAndSalt",
         "requestBody": {
@@ -778,23 +810,10 @@
         }
       }
     },
-    "/api/Test": {
+    "/api/tests/TestAuth": {
       "get": {
         "tags": [
-          "Test"
-        ],
-        "operationId": "Test",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/TestAuth": {
-      "get": {
-        "tags": [
-          "TestAuth"
+          "Tests"
         ],
         "operationId": "TestAuthorize",
         "responses": {
@@ -824,10 +843,10 @@
         }
       }
     },
-    "/api/TestAuthenticate": {
+    "/api/tests/TestAuthenticate": {
       "get": {
         "tags": [
-          "TestAuthenticate"
+          "Tests"
         ],
         "operationId": "TestAuthenticateAdmin",
         "responses": {
@@ -837,10 +856,23 @@
         }
       }
     },
-    "/api/TestTime": {
+    "/api/tests/Test": {
       "get": {
         "tags": [
-          "TestTime"
+          "Tests"
+        ],
+        "operationId": "Test",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/tests/TestTime": {
+      "get": {
+        "tags": [
+          "Tests"
         ],
         "operationId": "TestTime",
         "responses": {
@@ -863,38 +895,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/Unregister": {
-      "post": {
-        "tags": [
-          "Unregister"
-        ],
-        "operationId": "Unregister",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserIdentification"
-              }
-            }
-          }
-        },
-        "responses": {
-          "500": {
-            "description": "Server Error"
           }
         }
       }
