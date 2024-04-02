@@ -225,7 +225,7 @@ jobs:
     steps:
     - name: Check Endpoint
       run: |
-        response=$(curl -s -o /dev/null -w "%{http_code}" https://api.revmetrix.io/api/TestTime)
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://api.revmetrix.io/api/tests/TestTime)
         if [ "$response" == "200" ]; then
           echo "Endpoint returned 200 OK"
           exit 0
