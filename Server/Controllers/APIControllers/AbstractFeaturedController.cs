@@ -6,6 +6,7 @@ namespace Server.Controllers.APIControllers;
 /// Provides base functionality for many controllers - will be added to in the future
 /// </summary>
 [Controller]
+[Tags("Gets")]
 public abstract class AbstractFeaturedController : ControllerBase
 {
     /// <summary>

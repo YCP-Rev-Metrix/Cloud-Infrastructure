@@ -7,7 +7,8 @@ using Server.Controllers.APIControllers;
 namespace Server.Controllers.DatabaseControllers.Posts;
 
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Gets")]
+[Route("api/gets/[controller]")]
 public class GetShotsController : AbstractFeaturedController
 {
     [HttpGet(Name = "GetShots")]

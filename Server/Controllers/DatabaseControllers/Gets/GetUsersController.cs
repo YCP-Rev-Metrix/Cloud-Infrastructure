@@ -1,13 +1,16 @@
 ﻿using Common.Logging;
 using Common.POCOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Controllers.APIControllers;
+
 
 namespace Server.Controllers.DatabaseControllers.Posts;
 
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Gets")]
+[Route("api/gets/[controller]")]
 public class GetUsersController : AbstractFeaturedController
 {
     [HttpGet(Name = "GetUsers")]

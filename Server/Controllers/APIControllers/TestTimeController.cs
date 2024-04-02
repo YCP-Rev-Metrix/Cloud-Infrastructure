@@ -9,7 +9,8 @@ namespace Server.Controllers.APITestControllers;
 /// Provides functionality for testing API connections
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Tests")]
+[Route("api/tests/[controller]")]
 public class TestTimeController : AbstractFeaturedController
 {
     /// <summary>

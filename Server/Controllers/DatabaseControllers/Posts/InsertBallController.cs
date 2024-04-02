@@ -7,7 +7,8 @@ using Server.Controllers.APIControllers;
 namespace Server.Controllers.DatabaseControllers.Deletes;
 
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Posts")]
+[Route("api/posts/[controller]")]
 public class InsertBallController : AbstractFeaturedController
 {
     [HttpPost(Name = "InsertBall")]

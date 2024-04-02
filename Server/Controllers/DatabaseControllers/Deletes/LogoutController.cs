@@ -7,7 +7,8 @@ using Server.Controllers.APIControllers;
 namespace Server.Controllers.DatabaseControllers.Deletes;
 
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Deletes")]
+[Route("api/deletes/[controller]")]
 public class LogoutController : AbstractFeaturedController
 {
     /// <summary>

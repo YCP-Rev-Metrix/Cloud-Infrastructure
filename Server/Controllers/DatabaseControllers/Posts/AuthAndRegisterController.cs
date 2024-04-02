@@ -7,7 +7,8 @@ using Server.Controllers.APIControllers;
 namespace Server.Controllers.DatabaseControllers.Posts;
 
 [ApiController]
-[Route("api/")]
+[Tags("Posts")]
+[Route("api/posts")]
 public class AuthAndRegisterController : AbstractFeaturedController
 {
     /// <summary>

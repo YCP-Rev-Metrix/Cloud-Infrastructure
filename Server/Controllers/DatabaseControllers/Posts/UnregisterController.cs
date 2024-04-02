@@ -7,7 +7,8 @@ using Server.Controllers.APIControllers;
 namespace Server.Controllers.DatabaseControllers.Posts;
 
 [ApiController]
-[Route("api/[controller]")]
+[Tags("Posts")]
+[Route("api/posts/[controller]")]
 public class UnregisterController : AbstractFeaturedController
 {
     /// <summary>

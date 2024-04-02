@@ -7,7 +7,8 @@ namespace Server.Controllers.APITestControllers;
 /// <summary>
 /// Provides elevated admin functionality such as database rebuilding
 /// </summary>
-[Route("api/")]
+[Tags("Posts")]
+[Route("api/posts")]
 public class SuperUserController : AbstractFeaturedController
 {
     /// <summary>

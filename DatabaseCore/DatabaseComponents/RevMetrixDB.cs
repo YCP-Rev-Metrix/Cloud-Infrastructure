@@ -10,4 +10,4 @@ namespace DatabaseCore.DatabaseComponents;
 public partial class RevMetrixDB : AbstractDatabase
 {
     public RevMetrixDB() : base("revmetrix-db") { }
-}
+} 
