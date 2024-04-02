@@ -233,3 +233,13 @@ jobs:
           echo "Endpoint returned $response"
           exit 1
         fi
+  trigger-deploy-workflow:
+    runs-on: ubuntu-latest
+    needs: [test-endpoint]
+    steps:
+    - name: Trigger Wiki Redeploy
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.PERS_ACC_TOK }}
+        repository: YCP-Rev-Metrix/Wiki
+        event-type: trigger-deploy
