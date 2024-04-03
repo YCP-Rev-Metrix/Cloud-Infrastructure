@@ -10,9 +10,9 @@ public partial class RevMetrixDB
                                    int? frame_id,
                                    int? ball_id,
                                    int? video_id,
-                                   int pins_remaining,  // Changed from byte[] to int
+                                   byte[] pins_remaining, 
                                    DateTime time,
-                                   int lane_number,     // Changed from byte[] to int
+                                   byte[] lane_number,     
                                    float ddx,
                                    float ddy,
                                    float ddz,

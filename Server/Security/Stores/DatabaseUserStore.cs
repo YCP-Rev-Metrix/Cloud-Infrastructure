@@ -56,18 +56,11 @@ public class DatabaseUserStore : AbstractUserStore
     }
 
     public override async Task<bool> InsertShot(int user_id, int? frame_id, int? ball_id, int? video_id,
-                                                int pins_remaining,
+                                                byte[] pins_remaining,
                                                 DateTime time,
-                                                int lane_number,
+                                                byte[] lane_number,
                                                 float ddx, float ddy, float ddz, float x_position, float y_position, float z_position)
     {
-        // This is just for testing purposes 
-        // Have to figure out how to accept binary from json and then convert
-        // Issues with BinaryData
-        //byte[] pins_remaining = new byte[8];
-        //byte[] lane_number = new byte[8];
-        // NEED to figure out why the byte[] data type breaks the end point and how to go about fixing it
-
         return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position);
     }
 
