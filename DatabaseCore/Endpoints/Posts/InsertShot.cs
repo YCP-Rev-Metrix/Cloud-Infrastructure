@@ -10,9 +10,9 @@ public partial class RevMetrixDB
                                    int? frame_id,
                                    int? ball_id,
                                    int? video_id,
-                                   byte[] pins_remaining, 
+                                   int? pins_remaining, 
                                    DateTime time,
-                                   byte[] lane_number,     
+                                   int? lane_number,     
                                    float ddx,
                                    float ddy,
                                    float ddz,
@@ -61,9 +61,9 @@ public partial class RevMetrixDB
         {
             command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = DBNull.Value;
         }
-        command.Parameters.Add("@Pins_remaining", SqlDbType.VarBinary, 8).Value = pins_remaining;
+        command.Parameters.Add("@Pins_remaining", SqlDbType.Int, 8).Value = pins_remaining;
         command.Parameters.Add("@Time", SqlDbType.DateTime, 2).Value = time;
-        command.Parameters.Add("@Lane_number", SqlDbType.VarBinary, 8).Value = lane_number;
+        command.Parameters.Add("@Lane_number", SqlDbType.Int, 8).Value = lane_number;
         command.Parameters.Add("@Ddx", SqlDbType.Float).Value = ddx;
         command.Parameters.Add("@Ddy", SqlDbType.Float).Value = ddy;
         command.Parameters.Add("@Ddz", SqlDbType.Float).Value = ddz;

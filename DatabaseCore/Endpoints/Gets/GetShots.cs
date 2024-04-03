@@ -22,22 +22,15 @@ public partial class RevMetrixDB
 
         while (await reader.ReadAsync()) // Use while instead of if to handle multiple rows
         {
-
-            var pinsRemaining = new byte[2];
-            reader.GetBytes(reader.GetOrdinal("pins_remaining"), 0, pinsRemaining, 0, 2);
-
-            var laneNumber = new byte[2];
-            reader.GetBytes(reader.GetOrdinal("lane_number"), 0, laneNumber, 0, 2);
-
             // construct a new Shot object for each entry
             var shot = new Shot(
                 user_id: reader.GetInt32(reader.GetOrdinal("user_id")),
                 frame_id: reader.IsDBNull(reader.GetOrdinal("frame_id")) ? null : reader.GetInt32(reader.GetOrdinal("frame_id")),
                 ball_id: reader.IsDBNull(reader.GetOrdinal("ball_id")) ? null : reader.GetInt32(reader.GetOrdinal("ball_id")),
                 video_id: reader.IsDBNull(reader.GetOrdinal("video_id")) ? null : reader.GetInt32(reader.GetOrdinal("video_id")),
-                pins_remaining: pinsRemaining,
+                pins_remaining: reader.GetInt32(reader.GetOrdinal("pins_remaining")),
                 time: reader.GetDateTime(reader.GetOrdinal("time")),
-                lane_number: laneNumber,
+                lane_number: reader.GetInt32(reader.GetOrdinal("lane_number")),
                 ddx: reader.GetFloat(reader.GetOrdinal("ddx")),
                 ddy: reader.GetFloat(reader.GetOrdinal("ddy")),
                 ddz: reader.GetFloat(reader.GetOrdinal("ddz")),
