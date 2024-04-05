@@ -1118,8 +1118,7 @@
           },
           "pins_remaining": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "time": {
             "type": "string",
@@ -1127,8 +1126,7 @@
           },
           "lane_Number": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "ddx": {
             "type": "number",
