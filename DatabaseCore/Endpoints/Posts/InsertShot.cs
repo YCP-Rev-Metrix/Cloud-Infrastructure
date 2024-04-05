@@ -61,9 +61,9 @@ public partial class RevMetrixDB
         {
             command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = DBNull.Value;
         }
-        command.Parameters.Add("@Pins_remaining", SqlDbType.Int, 8).Value = pins_remaining;
+        command.Parameters.Add("@Pins_remaining", SqlDbType.BigInt, 8).Value = pins_remaining;
         command.Parameters.Add("@Time", SqlDbType.DateTime, 2).Value = time;
-        command.Parameters.Add("@Lane_number", SqlDbType.Int, 8).Value = lane_number;
+        command.Parameters.Add("@Lane_number", SqlDbType.BigInt, 8).Value = lane_number;
         command.Parameters.Add("@Ddx", SqlDbType.Float).Value = ddx;
         command.Parameters.Add("@Ddy", SqlDbType.Float).Value = ddy;
         command.Parameters.Add("@Ddz", SqlDbType.Float).Value = ddz;

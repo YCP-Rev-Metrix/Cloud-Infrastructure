@@ -60,7 +60,7 @@ public partial class RevMetrixDB
             ShotTable.Columns.Add(video_id);
 
             // Pins Remaining  
-            var pins_remaining = new Column(ShotTable, "pins_remaining", DataType.Int)
+            var pins_remaining = new Column(ShotTable, "pins_remaining", DataType.BigInt)
             {
                 Nullable = false
             };
@@ -74,7 +74,7 @@ public partial class RevMetrixDB
             ShotTable.Columns.Add(time);
 
             // Lane Number  
-            var lane_Number = new Column(ShotTable, "lane_Number", DataType.Int)
+            var lane_Number = new Column(ShotTable, "lane_Number", DataType.BigInt)
             {
                 Nullable = false
             };
