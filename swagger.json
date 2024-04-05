@@ -1117,8 +1117,8 @@
             "nullable": true
           },
           "pins_remaining": {
-            "type": "string",
-            "format": "byte",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "time": {
@@ -1126,8 +1126,8 @@
             "format": "date-time"
           },
           "lane_Number": {
-            "type": "string",
-            "format": "byte",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "ddx": {
