@@ -15,6 +15,6 @@ public class StartFrameController : AbstractFeaturedController
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     public async Task<IActionResult> StartFrame([FromBody] Frame frame)
     {
-        return Ok(await ServerState.UserStore.StartFrame(frame.Game_id, frame.Score));
+        return Ok(await ServerState.UserStore.StartFrame(frame.Game_id, frame.Shot_number, frame.Score));
     }
 }

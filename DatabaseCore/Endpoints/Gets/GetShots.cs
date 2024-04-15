@@ -13,7 +13,7 @@ public partial class RevMetrixDB
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string selectQuery = "SELECT user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position FROM [Shot]"; // select all shots
+        string selectQuery = "SELECT user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position, pocket_hit FROM [Shot]"; // select all shots
 
         using var command = new SqlCommand(selectQuery, connection);
 
@@ -24,19 +24,20 @@ public partial class RevMetrixDB
         {
             // construct a new Shot object for each entry
             var shot = new Shot(
-                user_id: reader.GetInt32(reader.GetOrdinal("user_id")),
-                frame_id: reader.IsDBNull(reader.GetOrdinal("frame_id")) ? null : reader.GetInt32(reader.GetOrdinal("frame_id")),
-                ball_id: reader.IsDBNull(reader.GetOrdinal("ball_id")) ? null : reader.GetInt32(reader.GetOrdinal("ball_id")),
-                video_id: reader.IsDBNull(reader.GetOrdinal("video_id")) ? null : reader.GetInt32(reader.GetOrdinal("video_id")),
-                pins_remaining: reader.GetInt32(reader.GetOrdinal("pins_remaining")),
-                time: reader.GetDateTime(reader.GetOrdinal("time")),
-                lane_number: reader.GetInt32(reader.GetOrdinal("lane_number")),
-                ddx: reader.GetFloat(reader.GetOrdinal("ddx")),
-                ddy: reader.GetFloat(reader.GetOrdinal("ddy")),
-                ddz: reader.GetFloat(reader.GetOrdinal("ddz")),
-                x_position: reader.GetFloat(reader.GetOrdinal("x_position")),
-                y_position: reader.GetFloat(reader.GetOrdinal("y_position")),
-                z_position: reader.GetFloat(reader.GetOrdinal("z_position"))
+                user_id: (int)reader.GetInt64("user_id"),
+                frame_id: (int)reader.GetInt64("frame_id"),
+                ball_id: (int)reader.GetInt64("ball_id"),
+                video_id: (int)reader.GetInt64("video_id"),
+                pins_remaining: (int)reader.GetInt64("pins_remaining"),
+                time: reader.GetDateTime("time"),
+                lane_number: (int)reader.GetInt64("lane_number"),
+                ddx: reader.GetFloat("ddx"),
+                ddy: reader.GetFloat("ddy"),
+                ddz: reader.GetFloat("ddz"),
+                x_position: reader.GetFloat("x_position"),
+                y_position: reader.GetFloat("y_position"),
+                z_position: reader.GetFloat("z_position"),
+                pocket_hit: (int)reader.GetInt64("pocket_hit")
             );
 
             shots.Add(shot);

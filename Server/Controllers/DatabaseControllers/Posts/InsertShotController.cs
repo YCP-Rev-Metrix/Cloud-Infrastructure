@@ -28,7 +28,8 @@ public class InsertShotController : AbstractFeaturedController
             shot.Ddz,
             shot.X_position,
             shot.Y_position,
-            shot.Z_position
+            shot.Z_position,
+            shot.Pocket_hit
         );
 
         return Ok(result);

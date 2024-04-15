@@ -32,10 +32,17 @@ public partial class RevMetrixDB
             };
             FrameTable.Columns.Add(game_id);
 
+            // Shot_number
+            var shot_number = new Column(FrameTable, "shot_number", DataType.BigInt)
+            {
+                Nullable = false
+            };
+            FrameTable.Columns.Add(shot_number);
+
             var score = new Column(FrameTable, "score", DataType.VarChar(255));
             FrameTable.Columns.Add(score);
 
-            if (!temp.Tables.Contains("Frame"))
+            if (!temp.Tables.Contains("Frame")) 
             {
                 FrameTable.Create();
             }

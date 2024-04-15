@@ -12,13 +12,14 @@ public partial class RevMetrixDB
                                    int? video_id,
                                    int? pins_remaining, 
                                    DateTime time,
-                                   int? lane_number,     
+                                   int? lane_number,
                                    float ddx,
                                    float ddy,
                                    float ddz,
                                    float x_position,
                                    float y_position,
-                                   float z_position
+                                   float z_position,
+                                   int? pocket_hit
         )
     {
         ConnectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
@@ -26,8 +27,8 @@ public partial class RevMetrixDB
         using var connection = new SqlConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position) " +
-                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, @Z_position)";
+        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position, pocket_hit) " +
+                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, @Z_position, @pocket_hit)";
 
         using var command = new SqlCommand(insertQuery, connection);
 
@@ -70,6 +71,7 @@ public partial class RevMetrixDB
         command.Parameters.Add("@X_position", SqlDbType.Float).Value = x_position;
         command.Parameters.Add("@Y_position", SqlDbType.Float).Value = y_position;
         command.Parameters.Add("@Z_position", SqlDbType.Float).Value = z_position;
+        command.Parameters.Add("@Pocket_hit", SqlDbType.BigInt).Value = pocket_hit;
 
         // Execute the query
         int i = await command.ExecuteNonQueryAsync();

@@ -55,13 +55,22 @@ public class DatabaseUserStore : AbstractUserStore
         return true;
     }
 
-    public override async Task<bool> InsertShot(int user_id, int? frame_id, int? ball_id, int? video_id,
+    public override async Task<bool> InsertShot(int user_id, 
+                                                int? frame_id, 
+                                                int? ball_id, 
+                                                int? video_id,
                                                 int pins_remaining,
                                                 DateTime time,
                                                 int lane_number,
-                                                float ddx, float ddy, float ddz, float x_position, float y_position, float z_position)
+                                                float ddx, 
+                                                float ddy, 
+                                                float ddz, 
+                                                float x_position, 
+                                                float y_position, 
+                                                float z_position, 
+                                                int? pocket_hit)
     {
-        return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position);
+        return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position, pocket_hit);
     }
 
     public override async Task<bool> InsertBall(float weight, string? color)
@@ -90,9 +99,9 @@ public class DatabaseUserStore : AbstractUserStore
     {
         return await ServerState.UserDatabase.Startgame(session_id, score);
     }
-    public override async Task<bool> StartFrame(int game_id, int score)
+    public override async Task<bool> StartFrame(int game_id, int shot_number, int score)
     {
-        return await ServerState.UserDatabase.Startframe(game_id, score);
+        return await ServerState.UserDatabase.Startframe(game_id, shot_number, score);
     }
 }
 

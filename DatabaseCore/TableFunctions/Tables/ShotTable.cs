@@ -104,6 +104,9 @@ public partial class RevMetrixDB
             var z_position = new Column(ShotTable, "z_position", DataType.Float);
             ShotTable.Columns.Add(z_position);
 
+            var pocket_hit = new Column(ShotTable, "pocket_hit", DataType.BigInt);
+            ShotTable.Columns.Add(pocket_hit);
+
             // Create the entire table for shot
             if (!temp.Tables.Contains("Shot"))
             {

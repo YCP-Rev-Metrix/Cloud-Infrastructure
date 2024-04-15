@@ -10,7 +10,7 @@ public class Shot : POCO
     // Parameterized constructor can still exist and be used elsewhere
     public Shot(int user_id, int? frame_id, int? ball_id, int? video_id, int pins_remaining,
                 DateTime time, int lane_number, float ddx, float ddy, float ddz,
-                float x_position, float y_position, float z_position)
+                float x_position, float y_position, float z_position, int? pocket_hit)
     {
         User_id = user_id;
         Frame_id = frame_id;
@@ -25,6 +25,7 @@ public class Shot : POCO
         X_position = x_position;
         Y_position = y_position;
         Z_position = z_position;
+        Pocket_hit = pocket_hit;
     }
 
     // Properties
@@ -41,4 +42,5 @@ public class Shot : POCO
     public float X_position { get; set; }
     public float Y_position { get; set; }
     public float Z_position { get; set; }
+    public int? Pocket_hit { get; set; }
 }
