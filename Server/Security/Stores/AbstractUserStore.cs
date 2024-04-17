@@ -6,20 +6,20 @@ public abstract class AbstractUserStore
 {
     public abstract Task<bool> CreateUser(string firstname, string lastname, string username, string password, string email, string phone_number, string[]? roles = null);
     public abstract Task<bool> DeleteUser(string username);
-    public abstract Task<bool> InsertShot(int user_id,
-                                       int? frame_id,
-                                       int? ball_id,
-                                       int? video_id,
-                                       int pins_remaining,
+    public abstract Task<bool> InsertShot(long user_id,
+                                       long? frame_id,
+                                       long? ball_id,
+                                       long? video_id,
+                                       long pins_remaining,
                                        DateTime time,
-                                       int lane_number,
-                                       float ddx,
-                                       float ddy,
-                                       float ddz,
-                                       float x_position,
-                                       float y_position,
-                                       float z_position, 
-                                       int? pocket_hit);
+                                       long lane_number,
+                                       double ddx,
+                                       double ddy,
+                                       double ddz,
+                                       double x_position,
+                                       double y_position,
+                                       double z_position, 
+                                       long? pocket_hit);
     public abstract Task<bool> InsertBall(float weight, string? color);
     public abstract Task<(bool success, string[]? roles)> GetRoles(string username);
     public abstract Task<(bool success, string[]? roles)> VerifyUser(string username, string password);

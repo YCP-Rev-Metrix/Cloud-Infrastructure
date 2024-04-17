@@ -8,9 +8,9 @@ public class Shot : POCO
     public Shot() { }
 
     // Parameterized constructor can still exist and be used elsewhere
-    public Shot(int user_id, int? frame_id, int? ball_id, int? video_id, int pins_remaining,
-                DateTime time, int lane_number, float ddx, float ddy, float ddz,
-                float x_position, float y_position, float z_position, int? pocket_hit)
+    public Shot(long user_id, long? frame_id, long? ball_id, long? video_id, long pins_remaining,
+                DateTime time, long lane_number, double ddx, double ddy, double ddz,
+                double x_position, double y_position, double z_position, long? pocket_hit)
     {
         User_id = user_id;
         Frame_id = frame_id;
@@ -29,18 +29,18 @@ public class Shot : POCO
     }
 
     // Properties
-    public int User_id { get; set; }
-    public int? Frame_id { get; set; }
-    public int? Ball_id { get; set; }
-    public int? Video_id { get; set; }
-    public int Pins_remaining { get; set; }
+    public long User_id { get; set; }
+    public long? Frame_id { get; set; }
+    public long? Ball_id { get; set; }
+    public long? Video_id { get; set; }
+    public long Pins_remaining { get; set; }
     public DateTime Time { get; set; }
-    public int Lane_Number { get; set; }
-    public float Ddx { get; set; }
-    public float Ddy { get; set; }
-    public float Ddz { get; set; }
-    public float X_position { get; set; }
-    public float Y_position { get; set; }
-    public float Z_position { get; set; }
-    public int? Pocket_hit { get; set; }
+    public long Lane_Number { get; set; }
+    public double Ddx { get; set; }
+    public double Ddy { get; set; }
+    public double Ddz { get; set; }
+    public double X_position { get; set; }
+    public double Y_position { get; set; }
+    public double Z_position { get; set; }
+    public long? Pocket_hit { get; set; }
 }

@@ -55,20 +55,20 @@ public class DatabaseUserStore : AbstractUserStore
         return true;
     }
 
-    public override async Task<bool> InsertShot(int user_id, 
-                                                int? frame_id, 
-                                                int? ball_id, 
-                                                int? video_id,
-                                                int pins_remaining,
+    public override async Task<bool> InsertShot(long user_id, 
+                                                long? frame_id, 
+                                                long? ball_id, 
+                                                long? video_id,
+                                                long pins_remaining,
                                                 DateTime time,
-                                                int lane_number,
-                                                float ddx, 
-                                                float ddy, 
-                                                float ddz, 
-                                                float x_position, 
-                                                float y_position, 
-                                                float z_position, 
-                                                int? pocket_hit)
+                                                long lane_number,
+                                                double ddx, 
+                                                double ddy, 
+                                                double ddz, 
+                                                double x_position, 
+                                                double y_position, 
+                                                double z_position, 
+                                                long? pocket_hit)
     {
         return await ServerState.UserDatabase.InsertShot(user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position, pocket_hit);
     }
