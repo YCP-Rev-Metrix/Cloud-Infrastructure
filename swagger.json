@@ -973,6 +973,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "shot_number": {
+            "type": "integer",
+            "format": "int32"
+          },
           "score": {
             "type": "integer",
             "format": "int32"
@@ -1151,6 +1155,11 @@
           "z_position": {
             "type": "number",
             "format": "float"
+          },
+          "pocket_hit": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
