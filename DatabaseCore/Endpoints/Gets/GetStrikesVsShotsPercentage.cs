@@ -32,7 +32,7 @@ public partial class RevMetrixDB
         {
             var percentage = new Shot
             {
-                User_id = reader.GetInt32(reader.GetOrdinal("user_id")),
+                Shot_id = reader.GetInt32(reader.GetOrdinal("shot_id")),
                 //Strike_percentage = reader.GetInt32(reader.GetOrdinal("strike_percentage")),
                 //Shot_percentage = reader.GetInt32(reader.GetOrdinal("shot_percentage")),
             };
