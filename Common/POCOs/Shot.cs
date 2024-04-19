@@ -34,18 +34,23 @@ public class Shot : POCO
     }
 
     // Properties
-    public int User_id { get; set; }
+    public int? Shot_id { get; set; }
+    public int? Session_id { get; set; }
+    public int? Game_id { get; set; }
     public int? Frame_id { get; set; }
     public int? Ball_id { get; set; }
     public int? Video_id { get; set; }
-    public int Pins_remaining { get; set; }
+    public int? Shot_number { get; set; }
+    public int? Shot_number_ot { get; set; }
     public DateTime Time { get; set; }
-    public int Lane_Number { get; set; }
+    public int? Lane_Number { get; set; }
+    public int? Pocket_hit { get; set; }
+    public string? Count { get; set; }
+    public string? Pins { get; set; }
     public float Ddx { get; set; }
     public float Ddy { get; set; }
     public float Ddz { get; set; }
     public float X_position { get; set; }
     public float Y_position { get; set; }
     public float Z_position { get; set; }
-    public int? Pocket_hit { get; set; }
 }
