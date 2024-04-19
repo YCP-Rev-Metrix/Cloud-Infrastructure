@@ -1,80 +1,73 @@
 ﻿using Common.Logging;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace DatabaseCore.DatabaseComponents;
 
 public partial class RevMetrixDB
 {
-    public async Task<bool> InsertShot(int user_id,
-                                   int? frame_id,
-                                   int? ball_id,
-                                   int? video_id,
-                                   int? pins_remaining, 
-                                   DateTime time,
-                                   int? lane_number,
-                                   float ddx,
-                                   float ddy,
-                                   float ddz,
-                                   float x_position,
-                                   float y_position,
-                                   float z_position,
-                                   int? pocket_hit
-        )
+    public async Task<bool> InsertShot(int? shot_id,
+                                       int? session_id,
+                                       int? game_id,
+                                       int? frame_id,
+                                       int? ball_id,
+                                       int? video_id,
+                                       DateTime time,
+                                       int? shot_number,
+                                       int? shot_number_ot,
+                                       int? lane_number,
+                                       int? pocket_hit,
+                                       string? count,
+                                       string? pins,
+                                       float ddx,
+                                       float ddy,
+                                       float ddz,
+                                       float x_position,
+                                       float y_position,
+                                       float z_position)
     {
-        ConnectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
-
-        using var connection = new SqlConnection(ConnectionString);
+        string connectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
+        using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
 
-        string insertQuery = "INSERT INTO [Shot] (user_id, frame_id, ball_id, video_id, pins_remaining, time, lane_number, ddx, ddy, ddz, x_position, y_position, z_position, pocket_hit) " +
-                     "VALUES (@User_id, @Frame_id, @Ball_id, @Video_id, @Pins_remaining, @Time, @Lane_number, @Ddx , @Ddy, @Ddz, @X_position, @Y_position, @Z_position, @pocket_hit)";
+        string insertQuery = @"
+            INSERT INTO [Shot] (
+                Shot_id, Session_id, Game_id, Frame_id, Ball_id, Video_id, Time, 
+                Shot_number, Shot_number_ot, Lane_Number, Pocket_hit, Count, Pins,
+                Ddx, Ddy, Ddz, X_position, Y_position, Z_position
+            ) VALUES (
+                @Shot_id, @Session_id, @Game_id, @Frame_id, @Ball_id, @Video_id, @Time, 
+                @Shot_number, @Shot_number_ot, @Lane_Number, @Pocket_hit, @Count, @Pins,
+                @Ddx, @Ddy, @Ddz, @X_position, @Y_position, @Z_position
+            )";
 
         using var command = new SqlCommand(insertQuery, connection);
 
-        // Set the parameter values
-        command.Parameters.Add("@User_id", SqlDbType.BigInt).Value = user_id;
-
-        // If frame_id is null
-        if (frame_id > -1)
-        {
-            command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = frame_id;
-        }
-        else
-        {
-            command.Parameters.Add("@Frame_id", SqlDbType.BigInt).Value = DBNull.Value;
-        }
-        // If ball_id is null
-        if (ball_id > -1)
-        {
-            command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = ball_id;
-        }
-        else
-        {
-            command.Parameters.Add("@Ball_id", SqlDbType.BigInt).Value = DBNull.Value;
-        }
-        // If video_id is null
-        if (video_id > -1)
-        {
-            command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = video_id;
-        }
-        else
-        {
-            command.Parameters.Add("@Video_id", SqlDbType.BigInt).Value = DBNull.Value;
-        }
-        command.Parameters.Add("@Pins_remaining", SqlDbType.BigInt, 8).Value = pins_remaining;
-        command.Parameters.Add("@Time", SqlDbType.DateTime, 2).Value = time;
-        command.Parameters.Add("@Lane_number", SqlDbType.BigInt, 8).Value = lane_number;
-        command.Parameters.Add("@Ddx", SqlDbType.Float).Value = ddx;
-        command.Parameters.Add("@Ddy", SqlDbType.Float).Value = ddy;
-        command.Parameters.Add("@Ddz", SqlDbType.Float).Value = ddz;
-        command.Parameters.Add("@X_position", SqlDbType.Float).Value = x_position;
-        command.Parameters.Add("@Y_position", SqlDbType.Float).Value = y_position;
-        command.Parameters.Add("@Z_position", SqlDbType.Float).Value = z_position;
-        command.Parameters.Add("@Pocket_hit", SqlDbType.BigInt).Value = pocket_hit;
+        // Set parameters, handling nullable values appropriately
+        command.Parameters.AddWithValue("@Shot_id", shot_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Session_id", session_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Game_id", game_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Frame_id", frame_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Ball_id", ball_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Video_id", video_id ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Time", time);
+        command.Parameters.AddWithValue("@Shot_number", shot_number ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Shot_number_ot", shot_number_ot ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Lane_Number", lane_number ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Pocket_hit", pocket_hit ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Count", string.IsNullOrEmpty(count) ? (object)DBNull.Value : count);
+        command.Parameters.AddWithValue("@Pins", string.IsNullOrEmpty(pins) ? (object)DBNull.Value : pins);
+        command.Parameters.AddWithValue("@Ddx", ddx);
+        command.Parameters.AddWithValue("@Ddy", ddy);
+        command.Parameters.AddWithValue("@Ddz", ddz);
+        command.Parameters.AddWithValue("@X_position", x_position);
+        command.Parameters.AddWithValue("@Y_position", y_position);
+        command.Parameters.AddWithValue("@Z_position", z_position);
 
         // Execute the query
-        int i = await command.ExecuteNonQueryAsync();
-        return i != -1;
+        int affectedRows = await command.ExecuteNonQueryAsync();
+        return affectedRows > 0;
     }
 }

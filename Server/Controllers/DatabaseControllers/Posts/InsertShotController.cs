@@ -16,20 +16,25 @@ public class InsertShotController : AbstractFeaturedController
     public async Task<IActionResult> InsertShot([FromBody] Shot shot)
     {
         var result = await ServerState.UserStore.InsertShot(
-            shot.User_id,
+            shot.Shot_id,
+            shot.Session_id,
+            shot.Game_id,
             shot.Frame_id,
             shot.Ball_id,
             shot.Video_id,
-            shot.Pins_remaining,
             shot.Time,
+            shot.Shot_number,
+            shot.Shot_number_ot,
             shot.Lane_Number,
+            shot.Pocket_hit,
+            shot.Count,
+            shot.Pins,
             shot.Ddx,
             shot.Ddy,
             shot.Ddz,
             shot.X_position,
             shot.Y_position,
-            shot.Z_position,
-            shot.Pocket_hit
+            shot.Z_position
         );
 
         return Ok(result);
