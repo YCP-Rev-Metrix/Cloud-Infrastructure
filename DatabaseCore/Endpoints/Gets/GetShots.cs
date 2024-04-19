@@ -10,6 +10,7 @@ namespace DatabaseCore.DatabaseComponents;
 
 public partial class RevMetrixDB
 {
+
     public async Task<(bool success, List<Shot> shots)> GetShots()
     {
         string connectionString = Environment.GetEnvironmentVariable("SERVERDB_CONNECTION_STRING");
