@@ -23,12 +23,172 @@
         }
       }
     },
+    "/api/gets/GetAcclerationFromBall_id": {
+      "get": {
+        "tags": [
+          "Gets"
+        ],
+        "operationId": "GetAcclerationFromBall_id",
+        "parameters": [
+          {
+            "name": "ball_id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/gets/GetShots": {
       "get": {
         "tags": [
           "Gets"
         ],
         "operationId": "GetShots",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shot"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShotActionResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShotActionResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShotActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/gets/GetStrikesVsShotsPercentage": {
+      "get": {
+        "tags": [
+          "Gets"
+        ],
+        "operationId": "GetStrikesVsShotsPercentage",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -902,6 +1062,10 @@
   },
   "components": {
     "schemas": {
+      "ActionResult": {
+        "type": "object",
+        "additionalProperties": false
+      },
       "Ball": {
         "type": "object",
         "properties": {
@@ -1101,9 +1265,20 @@
       "Shot": {
         "type": "object",
         "properties": {
-          "user_id": {
+          "shot_id": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
+          },
+          "session_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "game_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "frame_id": {
             "type": "integer",
@@ -1120,9 +1295,15 @@
             "format": "int32",
             "nullable": true
           },
-          "pins_remaining": {
+          "shot_number": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
+          },
+          "shot_number_ot": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "time": {
             "type": "string",
@@ -1130,7 +1311,21 @@
           },
           "lane_Number": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
+          },
+          "pocket_hit": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "count": {
+            "type": "string",
+            "nullable": true
+          },
+          "pins": {
+            "type": "string",
+            "nullable": true
           },
           "ddx": {
             "type": "number",
@@ -1155,11 +1350,18 @@
           "z_position": {
             "type": "number",
             "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShotActionResult": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/ActionResult"
           },
-          "pocket_hit": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+          "value": {
+            "$ref": "#/components/schemas/Shot"
           }
         },
         "additionalProperties": false
