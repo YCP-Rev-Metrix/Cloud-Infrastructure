@@ -3,7 +3,7 @@ version: '3.8'
 services:
     server:
         container_name: revmetrix-api
-        image: robwoodd/revmetrix-api
+        image: revmetrixproject/revmetrix-api
         environment:
             DOCKERIZED: Dockerized
         build:
@@ -25,14 +25,9 @@ services:
             - ./sql-scripts:/scripts
         networks:
             - web-network
-        # command: ["/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "BigPass@Word!", "-i", "/scripts/init.sql"]
-    
-  
-
+            
 networks:
   web-network:
 
 volumes:
   sql-data:
-  
-# docker exec -it sql_server /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P BigPass@Word! -i /scripts/init.sql
